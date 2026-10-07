@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -26,7 +27,8 @@ export function serve() {
 }
 
 export function loadPlaywright() {
-  const candidates = [path.join(ROOT, 'node_modules'), '/opt/node-tools/node_modules', '/opt/node22/lib/node_modules'];
+  const candidates = [path.join(ROOT, 'node_modules'), '/opt/node-tools/node_modules', '/opt/node22/lib/node_modules', '/usr/local/lib/node_modules'];
+  try { candidates.push(execSync('npm root -g', { encoding: 'utf8' }).trim()); } catch (e) { /* no npm */ }
   for (const c of candidates) {
     try { return createRequire(path.join(c, 'x.js'))('playwright'); } catch (e) { /* next */ }
   }
