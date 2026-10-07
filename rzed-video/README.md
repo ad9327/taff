@@ -39,7 +39,10 @@ Besoins : Node 22, ffmpeg, Playwright + Chromium (aucun paquet npm à installer 
 }
 ```
 
-Un clip vidéo se découpe en images avec `ffmpeg -i clip.mp4 -vf scale=1080:-2 -q:v 3 assets/clips/mic/%04d.jpg`.
+Le plus simple : `node tools/add-media.mjs <nom> <fichier>` (image ou clip ; un clip est interpolé à 60 fps
+et découpé en images). Exemple : `node tools/add-media.mjs logo logo-rzed.png`.
+
+Les fichiers Higgsfield (images, clips) ne sont pas versionnés : ils restent dans le compte Higgsfield du client.
 
 ## Direction
 
@@ -86,3 +89,8 @@ chiffres non publiés.
 - 2026-10-07 — vidéo refaite de zéro à partir de la planche du client ; plans Higgsfield générés (4 images) mais
   non téléchargeables (CDN Higgsfield bloqué par le réseau de l'environnement) → cartes de services en
   animations codées. À faire quand le domaine est autorisé : intégrer les images / clips Higgsfield et le vrai logo.
+- 2026-10-07 (suite) — le CDN Higgsfield restant bloqué ici, la version avec visuels est rendue dans le bac à sable
+  Higgsfield (même code, cloné depuis cette branche) : clip Kling 3.0 du micro sur l'accroche (7,5 crédits),
+  4 photos sur les cartes de services (animations réduites à un accent sur le beat quand une photo est présente).
+  La vidéo est déposée dans les médias Higgsfield du client.
+
