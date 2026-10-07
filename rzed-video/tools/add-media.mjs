@@ -1,6 +1,7 @@
 // node tools/add-media.mjs <name> <file>
-// Registers an image or a clip under <name> in assets/media.json (names the scenes look for:
-// logo, mic, singer, console, monitors, pads). A clip is interpolated to 60 fps and split into frames.
+// Registers an image or a clip under <name> in assets/media.local.json, which stays out of git (names the
+// scenes look for: logo, mic, singer, console, monitors, pads, cite). A clip is interpolated to 60 fps and
+// split into frames.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -8,7 +9,7 @@ import { ROOT } from './lib.mjs';
 
 const [name, file] = process.argv.slice(2);
 if (!name || !file) { console.log('usage: node tools/add-media.mjs <name> <image|video>'); process.exit(1); }
-const manifestPath = path.join(ROOT, 'assets/media.json');
+const manifestPath = path.join(ROOT, 'assets/media.local.json');
 const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
 const isVideo = /\.(mp4|mov|webm|m4v)$/i.test(file);
 

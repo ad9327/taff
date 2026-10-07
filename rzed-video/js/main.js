@@ -29,8 +29,12 @@ const ONLY = params.get('only');
 
 // ---------- media manifest (Higgsfield shots, optional) ----------
 async function loadManifest() {
-  try { const r = await fetch('assets/media.json', { cache: 'no-store' }); if (r.ok) return await r.json(); } catch (e) { /* none yet */ }
-  return {};
+  // media.json is versioned (the logo); media.local.json holds local shots and clips that stay out of git
+  const read = async (f) => {
+    try { const r = await fetch(f, { cache: 'no-store' }); if (r.ok) return await r.json(); } catch (e) { /* missing */ }
+    return {};
+  };
+  return { ...(await read('assets/media.json')), ...(await read('assets/media.local.json')) };
 }
 
 function makeMedia(manifest, parent, name, cls = '') {
@@ -196,6 +200,7 @@ async function init() {
   await Promise.all(['100px Anton', '100px Bebas', '400 40px Mont', '600 40px Mont', '800 40px Mont', 'italic 600 40px Mont']
     .map((f) => document.fonts.load(f, 'AÉ€0')));
   const ctx = {
+    iris: TRANS[0],   // the hook places the iris on its ring
     media: (parent, name, cls) => makeMedia(manifest, parent, name, cls),
     wait: (p) => { if (p) pending.push(p); },
   };

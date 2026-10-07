@@ -196,6 +196,7 @@ sfx.add(THUMP, CUE.servicesIn, 0.55); sfx.add(CL, CUE.servicesIn, 0.25);
 for (let i = 0; i < 4; i++) sfx.add(blip({ f0: 1200 + 150 * i, f1: 1600 + 150 * i }), CUE.grid + 0.1 + i * 0.07, 0.13, -0.3 + 0.2 * i);
 // chat
 sfx.add(THUMP, CUE.chatIn, 0.45);
+sfx.add(whoosh({ dur: 0.5, f0: 250, f1: 2800, peak: 0.7, seed: 83 }), CUE.phoneIn - 0.25, 0.3, 0.2);
 [CUE.msg1, CUE.msg2, CUE.msg3, CUE.msg4, CUE.msg5].forEach((c, i) => {
   const me = i % 2 === 0;
   sfx.add(blip(me ? { f0: 880, f1: 1480 } : { f0: 1320, f1: 990 }), c, 0.32, me ? 0.25 : -0.25);

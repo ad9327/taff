@@ -8,6 +8,14 @@ const PH = { x: 200, y: 420, w: 680, h: 1150 };
 const HEADER = 150, INPUT = 110, GAP = 18;
 
 export function build(root, ctx) {
+  // street shot: someone in the cité texting the studio; the chat phone then rises over it
+  const street = ctx.media(root, 'cite', 'full');
+  Object.assign(street.box.style, { left: '0px', top: '0px', width: '1080px', height: '1920px' });
+  street.fallback.style.display = 'none';
+  const dim = h('div', 'abs', root);
+  Object.assign(dim.style, { width: '1080px', height: '1920px', background: 'linear-gradient(180deg, rgba(2,6,26,.8) 0%, rgba(2,6,26,.55) 40%, rgba(2,6,26,.85) 100%)' });
+  if (!street.has) { street.box.style.display = 'none'; dim.style.display = 'none'; }
+
   const title = h('div', 'label blue', root, `<span class="in">${COPY.chatTitle}</span>`);
   title.style.fontSize = '128px';
   const tw_ = title.offsetWidth;
@@ -84,11 +92,19 @@ export function build(root, ctx) {
     set(title, { x: 540 - tw_ / 2, y: 190, s: 1.35 - 0.35 * spring(kt + 0.04, 3, 0.5), o: clamp((kt + 0.04) / 0.05), r: -2 });
     wipe(title, ease.outExpo(clamp((kt + 0.04) / 0.3)), 'l');
 
-    // phone rises in with the push, then sways
-    const kp = t - (CUE.chatIn - b(0.25));
+    // the street shot plays slowed (its 4 s cover the scene), dims and softens as the phone comes up
+    const rise = street.has ? clamp((t - CUE.phoneIn + 0.1) / 0.5) : 1;
+    if (street.has) {
+      ctx.wait(street.frame((t - b(35.5)) * 0.75));
+      set(street.box, { s: 1.02 + 0.04 * rise, blur: 9 * ease.inOutCubic(rise) });
+      dim.style.opacity = (0.25 + 0.75 * ease.inOutCubic(rise)).toFixed(3);
+    }
+
+    // phone rises in (over the street shot when there is one), then sways
+    const kp = t - (street.has ? CUE.phoneIn : CUE.chatIn - b(0.25));
     const sp = spring(kp, 1.8, 0.7);
     const sway = Math.sin(t * 0.9) * 5;
-    set(phone, { x: PH.x, y: PH.y + 260 * (1 - sp) + noise1(t * 0.6, 8) * 6, ry: -14 + sway + 20 * (1 - sp), rx: 6, r: -2 + 2 * (1 - sp), s: 1 });
+    set(phone, { x: PH.x, y: PH.y + (street.has ? 1500 : 260) * (1 - sp) + noise1(t * 0.6, 8) * 6, ry: -14 + sway + 20 * (1 - sp), rx: 6, r: -2 + 2 * (1 - sp), s: 1, o: kp > -0.02 ? 1 : 0 });
 
     // thread: newest at the bottom, older ones pushed up by springs
     const base = PH.h - 32 - INPUT - 22;

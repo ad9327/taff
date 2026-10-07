@@ -5,19 +5,29 @@ import { COPY } from '../copy.mjs';
 import { clamp, ease, spring, set, h, fit, tw, noise1 } from '../engine.js';
 import { icon } from '../icons.js';
 
-const CX = 540, CY = 720, R = 460;
+// Without a shot the ring and the words share the centre; over the studio clip the ring sits on the
+// clip's own neon halo and the words drop onto the dark hoodie below it.
+const PLAIN = { cx: 540, cy: 720, r: 460, ty: 720, sizes: [230, 205, 200], push: [1.08, 0.1], tint: 0.28 };
+const CLIP = { cx: 545, cy: 890, r: 470, ty: 1235, sizes: [190, 172, 168], push: [1, 0.05], tint: 0.1 };
 
 export function build(root, ctx) {
   // full-bleed shot
   const media = ctx.media(root, 'mic', 'full');
+  const L = media.has ? CLIP : PLAIN;
+  const CX = L.cx, CY = L.cy, R = L.r;
+  const pushAt = (t) => L.push[0] + L.push[1] * ease.inOutCubic(clamp(t / b(8)));
+  // the iris into the drop opens from this ring
+  Object.assign(ctx.iris, { cx: CX, cy: CY, r0: R * pushAt(ctx.iris.at) });
   Object.assign(media.box.style, { left: '0px', top: '0px', width: '1080px', height: '1920px' });
   media.fallback.innerHTML = `<div style="position:absolute;left:290px;top:420px;width:500px;height:900px;opacity:.22;filter:drop-shadow(0 0 30px #2f7bff)">${icon('mic', { stroke: '#8cc4ff', sw: 0.6 })}</div>`;
   media.fallback.style.background = 'radial-gradient(ellipse 70% 50% at 50% 42%, rgba(30,90,255,.35), rgba(2,6,26,0) 70%)';
   const grade = h('div', 'abs', root);
   Object.assign(grade.style, { width: '1080px', height: '1920px',
-    background: 'linear-gradient(180deg, rgba(2,6,26,.88) 0%, rgba(2,6,26,.25) 28%, rgba(2,6,26,.35) 55%, rgba(2,6,26,.92) 100%)' });
+    background: media.has
+      ? 'linear-gradient(180deg, rgba(2,6,26,.6) 0%, rgba(2,6,26,0) 22%, rgba(2,6,26,0) 50%, rgba(2,6,26,.7) 72%, rgba(2,6,26,.95) 100%)'
+      : 'linear-gradient(180deg, rgba(2,6,26,.88) 0%, rgba(2,6,26,.25) 28%, rgba(2,6,26,.35) 55%, rgba(2,6,26,.92) 100%)' });
   const tint = h('div', 'abs', root);
-  Object.assign(tint.style, { width: '1080px', height: '1920px', background: 'rgba(20,70,255,.28)', mixBlendMode: 'color' });
+  Object.assign(tint.style, { width: '1080px', height: '1920px', background: `rgba(20,70,255,${L.tint})`, mixBlendMode: 'color' });
 
   // the ring that closes around the words (becomes the iris)
   const ringSvg = h('div', 'abs', root, `<svg width="1080" height="1920" viewBox="0 0 1080 1920" style="overflow:visible">
@@ -35,23 +45,23 @@ export function build(root, ctx) {
     if (Array.isArray(txt)) el.innerHTML = `${txt[0]}<span class="accent">${txt[1]}</span>`;
     else el.textContent = txt;
     el.style.textShadow = '0 6px 40px rgba(0,8,40,.85)';
-    const size = fit(el, 900, [230, 205, 200][i]);
+    const size = fit(el, 900, L.sizes[i]);
     return { el, size, w: el.scrollWidth, at: [CUE.hook1 - 0.07, CUE.hook2, CUE.hook3][i] };
   });
   const gap = 6;
   const total = lines.reduce((s, l) => s + l.size * 0.98 + gap, -gap);
-  let y = CY - total / 2;
+  let y = L.ty - total / 2;
   for (const l of lines) { l.y = y; l.h = l.size * 0.98; y += l.h + gap; }
-  // block offset that keeps the lines shown so far centred on the ring
+  // block offset that keeps the lines shown so far centred where the block lives
   const centreOf = (n) => (lines[0].y + lines[n - 1].y + lines[n - 1].h) / 2;
-  const offsets = [1, 2, 3].map((n) => CY - centreOf(n));
+  const offsets = [1, 2, 3].map((n) => L.ty - centreOf(n));
 
   return (t) => {
     // media: play from the start, slow push in
     ctx.wait(media.frame(t));
-    const push = 1.08 + 0.1 * ease.inOutCubic(clamp(t / b(8)));
+    const push = pushAt(t);
     set(media.box, { s: push, o: 1 });
-    media.box.style.transformOrigin = '540px 760px';
+    media.box.style.transformOrigin = `${CX}px ${CY}px`;
 
     // tape stop: everything sags and slows between tapeStop and the iris
     const tape = ease.inQuad(clamp((t - CUE.tapeStop) / b(0.75)));
@@ -78,7 +88,10 @@ export function build(root, ctx) {
 
     // ring draws closed, pulses on the beat, hands over to the iris
     const draw = ease.outCubic(clamp((t - CUE.ringForm) / b(1)));
-    circle.style.strokeDashoffset = `${C * (1 - draw)}`;
+    // the ring rides the shot's push so it stays on the halo
+    circle.setAttribute('r', (R * push).toFixed(2));
+    circle.style.strokeDasharray = `${(C * push).toFixed(1)}`;
+    circle.style.strokeDashoffset = `${(C * push * (1 - draw)).toFixed(1)}`;
     const pulse = t > CUE.ringForm + b(1) ? Math.exp(-8 * ((t - CUE.ringForm - b(1)) % BEAT)) : 0;
     circle.setAttribute('stroke-width', (7 + 5 * pulse).toFixed(2));
     ringSvg.style.opacity = t >= b(7.25) ? 0 : clamp(draw * 3).toFixed(3);

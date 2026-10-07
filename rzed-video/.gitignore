@@ -7,3 +7,6 @@ out/*.wav
 out/*.log
 out/sheet*.png
 out/*-draft.mp4
+assets/media.local.json
+assets/clips/
+assets/img/*.jpg
