@@ -1,0 +1,9 @@
+out/frames/
+out/frames_draft/
+out/test_frames/
+out/sheet_tmp/
+out/stills/
+out/*.wav
+out/*.log
+out/sheet*.png
+out/*-draft.mp4

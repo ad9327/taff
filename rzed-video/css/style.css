@@ -1,0 +1,66 @@
+@font-face { font-family: 'Anton'; src: url('../assets/fonts/Anton-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Bebas'; src: url('../assets/fonts/BebasNeue-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Mont'; src: url('../assets/fonts/Montserrat.ttf') format('truetype'); font-weight: 100 900; font-display: block; }
+@font-face { font-family: 'Mont'; src: url('../assets/fonts/Montserrat-Italic.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: block; }
+
+:root {
+  --navy-0: #02061a;
+  --navy-1: #061340;
+  --navy-2: #0b2170;
+  --blue: #1f5fff;
+  --blue-2: #2f7bff;
+  --cyan: #4cb8ff;
+  --ice: #d6e9ff;
+  --white: #ffffff;
+  --ink: #050b24;
+  --glass: rgba(16, 38, 118, 0.46);
+  --glass-2: rgba(10, 24, 80, 0.62);
+  --edge: rgba(112, 172, 255, 0.55);
+  --glow: 0 0 24px rgba(60, 140, 255, 0.55), 0 0 80px rgba(40, 110, 255, 0.35);
+  --red: #ff3b4e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-0); }
+body { font-family: 'Mont', sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; inset: 0; overflow: hidden; background: var(--navy-0); }
+#bg { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#cam { position: absolute; inset: 0; transform-origin: 540px 960px; }
+#scenes { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; display: none; }
+.abs { position: absolute; left: 0; top: 0; }
+.center { position: absolute; left: 50%; top: 50%; }
+
+#grain { position: absolute; inset: -64px; pointer-events: none; opacity: 0.07; mix-blend-mode: overlay; background-size: 256px 256px; }
+#vignette { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 85% 70% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0, 2, 12, 0.72) 100%); }
+#flash { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 46%, rgba(170, 215, 255, 0.95), rgba(60, 130, 255, 0.5) 40%, rgba(20, 60, 200, 0) 75%); opacity: 0; mix-blend-mode: screen; }
+
+/* Big condensed titles */
+.title { font-family: 'Anton', sans-serif; text-transform: uppercase; line-height: 0.92; letter-spacing: 0.5px; white-space: nowrap; }
+.accent { color: var(--cyan); text-shadow: 0 0 30px rgba(76, 184, 255, 0.6); }
+
+/* Two-tone label boxes (blue box / white box) */
+.label { position: absolute; display: inline-block; font-family: 'Anton', sans-serif; text-transform: uppercase; white-space: nowrap;
+  padding: 6px 26px 4px; line-height: 1.12; transform-origin: 50% 50%; }
+.label.blue { background: linear-gradient(180deg, #2a6cff, #1a4fe0); color: #fff; box-shadow: 0 0 40px rgba(40, 110, 255, 0.55), inset 0 1px 0 rgba(255,255,255,0.35); }
+.label.white { background: linear-gradient(180deg, #ffffff, #dfe9ff); color: var(--ink); box-shadow: 0 10px 40px rgba(0, 10, 60, 0.6); }
+.label .in { display: inline-block; }
+
+/* Glass card */
+.glass { position: absolute; border-radius: 30px; background: linear-gradient(160deg, rgba(40, 80, 200, 0.42), rgba(8, 20, 70, 0.66));
+  border: 2px solid var(--edge); box-shadow: inset 0 0 40px rgba(70, 140, 255, 0.18), 0 20px 70px rgba(0, 6, 40, 0.65), 0 0 50px rgba(40, 110, 255, 0.25); }
+
+.pill { position: absolute; display: flex; align-items: center; gap: 16px; padding: 14px 30px 14px 18px; border-radius: 999px;
+  background: rgba(10, 26, 90, 0.72); border: 2px solid rgba(110, 170, 255, 0.5); font-weight: 600; font-size: 34px; white-space: nowrap;
+  box-shadow: 0 0 30px rgba(40, 110, 255, 0.25); }
+.pill .dot { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(180deg, #3b7bff, #1847d6); display: grid; place-items: center; box-shadow: 0 0 18px rgba(60, 130, 255, 0.7); }
+.pill .dot svg { width: 26px; height: 26px; }
+
+.ring { position: absolute; border-radius: 50%; border: 6px solid rgba(140, 200, 255, 0.95);
+  box-shadow: 0 0 24px rgba(80, 160, 255, 0.95), 0 0 90px rgba(40, 110, 255, 0.7), inset 0 0 24px rgba(80, 160, 255, 0.8), inset 0 0 90px rgba(40, 110, 255, 0.45); }
+
+.media { position: absolute; overflow: hidden; }
+.media img, .media canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+.media .fallback { position: absolute; inset: 0; }
