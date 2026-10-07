@@ -1,0 +1,10 @@
+out/frames/
+out/frames_draft/
+out/stills/
+out/sheet_tmp/
+out/*.wav
+out/*.log
+out/sheet*.png
+out/*.mp4
+out/final/
+assets/cars/

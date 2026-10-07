@@ -1,0 +1,54 @@
+@font-face { font-family: 'Anton'; src: url('../assets/fonts/Anton-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Michroma'; src: url('../assets/fonts/Michroma-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Mont'; src: url('../assets/fonts/Montserrat.ttf') format('truetype'); font-weight: 100 900; font-display: block; }
+
+:root {
+  --black: #050506;
+  --ink: #0b0b0e;
+  --chrome-hi: #ffffff;
+  --chrome-lo: #8d939c;
+  --gold: #d9b25f;
+  --gold-hi: #f6dc94;
+  --gold-lo: #9c7a32;
+  --white: #ffffff;
+  --beam: #fff4d6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--black); }
+body { font-family: 'Mont', sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; inset: 0; overflow: hidden; background: var(--black); }
+#bg { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#cam { position: absolute; inset: 0; transform-origin: 540px 960px; }
+#scenes { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; display: none; }
+.abs { position: absolute; left: 0; top: 0; }
+
+#grain { position: absolute; inset: -64px; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay; background-size: 256px 256px; }
+#vignette { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 90% 75% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.7) 100%); }
+#flash { position: absolute; inset: 0; pointer-events: none; background: #fff; opacity: 0; }
+
+/* a shot fills the frame; the grade keeps daylight and night photos in one family */
+.shot { position: absolute; overflow: hidden; }
+.shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.12) saturate(.88) brightness(.9); }
+
+.make { font-family: 'Mont', sans-serif; font-weight: 800; letter-spacing: 16px; color: var(--gold); white-space: nowrap; text-transform: uppercase; }
+.model { font-family: 'Michroma', sans-serif; white-space: nowrap; line-height: 1.05;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f3f6 45%, #a4abb5 55%, #ffffff 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.kinetic { font-family: 'Anton', sans-serif; text-transform: uppercase; white-space: nowrap; line-height: .95; }
+.goldtext { padding-top: .14em; background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, var(--gold-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.label { position: absolute; display: inline-block; font-family: 'Anton', sans-serif; text-transform: uppercase; white-space: nowrap; padding: 6px 26px 4px; line-height: 1.12; }
+.label.gold { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #111; box-shadow: 0 0 40px rgba(217,178,95,.35); }
+.label.white { background: #fff; color: #111; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.label .in { display: inline-block; }
+
+.pill { position: absolute; display: flex; align-items: center; gap: 14px; padding: 14px 30px; border-radius: 999px; white-space: nowrap;
+  background: rgba(10,10,12,.72); border: 2px solid rgba(217,178,95,.7); font-weight: 600; font-size: 36px; }
+.pill.goldfill { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #111; border-color: transparent; font-weight: 800; }
+
+.beam { position: absolute; left: -40px; width: 1160px; height: 6px; background: var(--beam);
+  box-shadow: 0 0 18px 6px rgba(255,240,200,.9), 0 0 80px 30px rgba(255,220,150,.45); border-radius: 3px; }
