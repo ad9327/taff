@@ -30,7 +30,7 @@ if (draft) {
   run('ffmpeg', ['-v', 'error', '-y', '-framerate', '120', '-i', path.join(frames, '%05d.jpg'), '-i', music,
     '-vf', 'tmix=frames=2,framestep=2,format=yuv420p', '-r', '60',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
-    '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-shortest', '-movflags', '+faststart', out]);
+    '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-shortest', '-movflags', '+faststart', out]);
   const web = path.join(ROOT, `out/${slug}-web.mp4`);
   run('ffmpeg', ['-v', 'error', '-y', '-i', out, '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-maxrate', '6M', '-bufsize', '12M',
     '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', web]);

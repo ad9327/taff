@@ -5,7 +5,7 @@ import { ROOT } from './lib.mjs';
 
 const inp = path.join(ROOT, 'out/music_raw.wav');
 const out = path.join(ROOT, 'out/music.wav');
-const target = 'I=-14:TP=-1.5:LRA=11';
+const target = 'I=-14:TP=-2.5:LRA=11';
 const p1 = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', inp, '-af', `loudnorm=${target}:print_format=json`, '-f', 'null', '-'], { encoding: 'utf8' });
 const js = JSON.parse(p1.stderr.slice(p1.stderr.lastIndexOf('{')));
 const af = `loudnorm=${target}:measured_I=${js.input_i}:measured_TP=${js.input_tp}:measured_LRA=${js.input_lra}:measured_thresh=${js.input_thresh}:offset=${js.target_offset}:linear=true,aresample=48000`;
