@@ -20,7 +20,7 @@ if (isVideo) {
   const frames = fs.readdirSync(dir).filter((f) => f.endsWith('.jpg')).length;
   manifest[name] = { type: 'clip', dir: `assets/clips/${name}`, fps: 60, frames };
 } else {
-  const keepAlpha = name === 'logo' || /\.png$/i.test(file) && name === 'logo';
+  const keepAlpha = name === 'logo';   // the logo keeps its transparency
   const ext = keepAlpha ? 'png' : 'jpg';
   const out = path.join(ROOT, `assets/img/${name}.${ext}`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
