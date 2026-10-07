@@ -13,16 +13,16 @@ export const SCENES_BEATS = {
   hook:     [0, 9],
   logo:     [7.5, 21],
   services: [19.5, 37],
-  chat:     [35.5, 49],
-  tarifs:   [47.5, 56],
-  packs:    [55.5, 64],
-  end:      [63.5, 76],
+  chat:     [35.5, 53],
+  tarifs:   [51.5, 60],
+  packs:    [59.5, 68],
+  end:      [67.5, 80],
 };
 export const S = Object.fromEntries(
   Object.entries(SCENES_BEATS).map(([k, [a, z]]) => [k, [b(a), b(z)]]),
 );
 
-export const DURATION = b(76);         // 32.57 s, 19 bars
+export const DURATION = b(80);         // 34.29 s, 20 bars
 
 // Named hits in beats. Picture and sound both read these.
 export const CUE_BEATS = {
@@ -33,14 +33,15 @@ export const CUE_BEATS = {
   studioLabel: 11, pill1: 13, pill2: 14, tagline: 16,
   servicesIn: 20,
   card1: 21, card2: 24, card3: 27, card4: 30, grid: 33,
-  chatIn: 36, phoneIn: 37,
-  msg1: 38, msg2: 39.5, msg3: 41, msg4: 42.5, msg5: 44,
-  tarifsIn: 48,
-  price1: 49, price2: 50.5, price3: 52,
-  packsIn: 56,
-  pack1: 57, pack2: 58.5, pack3: 60, packCta: 61.5,
-  endIn: 64,
-  endPhone: 65.5, endSocial: 67, endMail: 67.75, endAddr: 68.5,
+  chatIn: 36, phoneIn: 37,                      // phone opens on the TikTok profile
+  instaIn: 39.5, snapIn: 42, chatScreen: 44.5,  // swipes to Instagram, Snapchat, then the chat
+  msg1: 45, msg2: 46.25, msg3: 47.5, msg4: 48.75, msg5: 50,
+  tarifsIn: 52,
+  price1: 53, price2: 54.5, price3: 56,
+  packsIn: 60,
+  pack1: 61, pack2: 62.5, pack3: 64, packCta: 65.5,
+  endIn: 68,
+  endPhone: 69.5, endSocial: 71, endMail: 71.75, endAddr: 72.5,
 };
 export const CUE = Object.fromEntries(Object.entries(CUE_BEATS).map(([k, v]) => [k, b(v)]));
 
@@ -49,9 +50,9 @@ export const WHIPS = [
   { at: b(7.25), dur: b(0.75), kind: 'iris' },     // hook → logo (into the drop)
   { at: b(19.5), dur: b(0.5), kind: 'up' },        // logo → services
   { at: b(35.5), dur: b(0.5), kind: 'up' },        // services → chat
-  { at: b(47.5), dur: b(0.5), kind: 'iris' },      // chat → tarifs
-  { at: b(55.5), dur: b(0.5), kind: 'left' },      // tarifs → packs
-  { at: b(63.5), dur: b(0.5), kind: 'iris' },      // packs → end
+  { at: b(51.5), dur: b(0.5), kind: 'iris' },      // chat → tarifs
+  { at: b(59.5), dur: b(0.5), kind: 'left' },      // tarifs → packs
+  { at: b(67.5), dur: b(0.5), kind: 'iris' },      // packs → end
 ];
 
 // Energy per scene (from the brief: a TikTok promo for a rap studio → groove from bar 1).

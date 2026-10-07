@@ -16,9 +16,9 @@ export const TRANS = [
   { from: 'hook', to: 'logo', kind: 'iris', at: b(7.25), dur: b(0.75), cx: 540, cy: 720, r0: 460 },
   { from: 'logo', to: 'services', kind: 'up', at: b(19.5), dur: b(0.5) },
   { from: 'services', to: 'chat', kind: 'up', at: b(35.5), dur: b(0.5) },
-  { from: 'chat', to: 'tarifs', kind: 'iris', at: b(47.5), dur: b(0.5), cx: 540, cy: 960 },
-  { from: 'tarifs', to: 'packs', kind: 'left', at: b(55.5), dur: b(0.5) },
-  { from: 'packs', to: 'end', kind: 'iris', at: b(63.5), dur: b(0.5), cx: 540, cy: 420, r0: 60 },
+  { from: 'chat', to: 'tarifs', kind: 'iris', at: b(51.5), dur: b(0.5), cx: 540, cy: 960 },
+  { from: 'tarifs', to: 'packs', kind: 'left', at: b(59.5), dur: b(0.5) },
+  { from: 'packs', to: 'end', kind: 'iris', at: b(67.5), dur: b(0.5), cx: 540, cy: 420, r0: 60 },
 ];
 
 const HITS = [CUE.hook1, CUE.hook2, CUE.hook3, CUE.drop, CUE.servicesIn, CUE.card1, CUE.card2, CUE.card3, CUE.card4,
@@ -202,6 +202,12 @@ async function init() {
   const ctx = {
     iris: TRANS[0],   // the hook places the iris on its ring
     media: (parent, name, cls) => makeMedia(manifest, parent, name, cls),
+    // a still for thumbnails: the image itself, or a frame from the middle of a clip
+    poster: (name) => {
+      const m = manifest[name];
+      if (!m) return '';
+      return m.type === 'clip' ? `${m.dir}/${String(Math.ceil(m.frames / 2)).padStart(4, '0')}.jpg` : m.src;
+    },
     wait: (p) => { if (p) pending.push(p); },
   };
   SC = ORDER.map((name) => {

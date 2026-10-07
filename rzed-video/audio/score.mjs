@@ -25,7 +25,7 @@ const NBARS = Math.ceil(DURATION / BAR);
 
 // section of a beat → energy shape
 const beatOf = (t) => t / BEAT;
-const section = (beat) => (beat < 8 ? 'hook' : beat < 19.5 ? 'logo' : beat < 35.5 ? 'services' : beat < 47.5 ? 'chat' : beat < 55.5 ? 'tarifs' : beat < 63.5 ? 'packs' : 'end');
+const section = (beat) => (beat < 8 ? 'hook' : beat < 19.5 ? 'logo' : beat < 35.5 ? 'services' : beat < 51.5 ? 'chat' : beat < 59.5 ? 'tarifs' : beat < 67.5 ? 'packs' : 'end');
 
 // ---------- buses ----------
 const drums = new Bus(LEN), bass = new Bus(LEN), music = new Bus(LEN), sfx = new Bus(LEN), send = new Bus(LEN);
@@ -34,7 +34,7 @@ const drums = new Bus(LEN), bass = new Bus(LEN), music = new Bus(LEN), sfx = new
 const DROP = CUE.drop;
 const GAP0 = CUE.tapeStop;
 const inGap = (t) => t >= GAP0 && t < DROP;
-const END_STOP = b(74);
+const END_STOP = b(78);
 
 // ---------- drums ----------
 const K = kick();
@@ -203,6 +203,13 @@ sfx.add(whoosh({ dur: 0.5, f0: 250, f1: 2800, peak: 0.7, seed: 83 }), CUE.phoneI
   if (!me) sfx.add(blip({ f0: 1760, f1: 1700, dur: 0.06 }), c + 0.07, 0.15, -0.25);
 });
 tick(CUE.msg5 + 0.2, 0.14);
+// phone screens: a swipe whoosh on each change, a tap and a confirm blip on each follow button
+[CUE.instaIn, CUE.snapIn, CUE.chatScreen].forEach((c, i) => sfx.add(whoosh({ dur: 0.35, f0: 1200, f1: 5000, peak: 0.45, seed: 90 + i }), c - 0.18, 0.26, i % 2 ? -0.3 : 0.3));
+[CUE.phoneIn, CUE.instaIn, CUE.snapIn].forEach((c) => {
+  const tap = c + b(1.5);
+  sfx.add(blip({ f0: 1800, f1: 1700, dur: 0.035 }), tap, 0.22);
+  sfx.add(blip({ f0: 1100, f1: 1650 }), tap + 0.09, 0.2);
+});
 // price boards: ticks while the number rolls, a bright ding on the landing
 const ding = (t) => { const v = bell({ f: mtof(100), dur: 0.7, ratio: 1.41, index: 2, decay: 5 }); sfx.add(v, t, 0.17, 0.15); send.add(v, t, 0.15); sfx.add(blip({ f0: 3200, f1: 3000, dur: 0.05 }), t, 0.1); };
 sfx.add(MID, CUE.tarifsIn, 0.6);
@@ -238,6 +245,6 @@ console.log(`wrote ${dest}  ${(out.n / SR).toFixed(2)} s`);
 
 if (process.argv.includes('--report')) {
   const rms = (bus, a, z) => { let s = 0, n = 0; for (let i = Math.round(a * SR); i < Math.min(bus.n, Math.round(z * SR)); i++) { s += bus.L[i] ** 2 + bus.R[i] ** 2; n += 2; } return 20 * Math.log10(Math.sqrt(s / Math.max(1, n)) + 1e-9); };
-  const secs = [['hook', 0, b(6.5)], ['logo', b(8), b(19.5)], ['services', b(19.5), b(35.5)], ['chat', b(35.5), b(47.5)], ['tarifs', b(47.5), b(55.5)], ['packs', b(55.5), b(63.5)], ['end', b(63.5), b(74)]];
+  const secs = [['hook', 0, b(6.5)], ['logo', b(8), b(19.5)], ['services', b(19.5), b(35.5)], ['chat', b(35.5), b(51.5)], ['tarifs', b(51.5), b(59.5)], ['packs', b(59.5), b(67.5)], ['end', b(67.5), b(78)]];
   for (const [n, a, z] of secs) console.log(`${n.padEnd(9)} drums ${rms(drums, a, z).toFixed(1)}  bass ${rms(bass, a, z).toFixed(1)}  music ${rms(music, a, z).toFixed(1)}  sfx ${rms(sfx, a, z).toFixed(1)}  total ${rms(out, a, z).toFixed(1)} dBFS`);
 }

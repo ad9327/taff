@@ -1,3 +1,10 @@
 {
-  "logo": { "type": "img", "src": "assets/img/logo.png" }
+  "logo": {
+    "type": "img",
+    "src": "assets/img/logo.png"
+  },
+  "logoSmall": {
+    "type": "img",
+    "src": "assets/img/logo-small.png"
+  }
 }

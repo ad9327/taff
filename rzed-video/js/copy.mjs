@@ -14,6 +14,16 @@ export const COPY = {
     { key: 'master', label: 'Mastering', img: 'monitors' },
     { key: 'beat', label: 'Beatmaking', img: 'pads' },
   ],
+  // the phone in the street shows the studio's profiles before the chat
+  socials: [
+    { key: 'tiktok', title: ['TU NOUS AS VU', 'SUR TIKTOK'], chip: 'TikTok · @rzed_records', follow: 'Suivre', followed: 'Abonné ✓' },
+    { key: 'insta', title: ['SUIS-NOUS', 'SUR INSTA'], chip: 'Instagram · @rzed_records', follow: 'Suivre', followed: 'Abonné ✓' },
+    { key: 'snap', title: ['AJOUTE-NOUS', 'SUR SNAP'], chip: 'Snapchat · @rzed_records', follow: '+ Ajouter', followed: 'Ajouté ✓' },
+  ],
+  profileName: 'RZED Records',
+  profileHandle: 'rzed_records',
+  profileBio: ['🎙 Studio d’enregistrement', '📍 Livry-Gargan (93)', '⏰ Ouvert 7j/7 · 24h/24'],
+  profileHighlights: ['Tarifs', 'Studio', 'Beats', 'Contact'],
   chatTitle: 'ÉCRIS-NOUS.',
   chatName: 'RZED Records',
   chatStatus: 'en ligne',
