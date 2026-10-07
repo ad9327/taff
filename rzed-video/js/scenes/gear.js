@@ -25,9 +25,10 @@ export const snareEnv = (t, d) => env(t, SNARE, d);
 
 const W = 820, HH = 780;
 
-export function gear(parent, key) {
+export function gear(parent, key, { photo = false } = {}) {
   const g = h('div', 'abs', parent);
   Object.assign(g.style, { width: `${W}px`, height: `${HH}px` });
+  if (photo) return accent(g, key);
   if (key === 'rec') return rec(g);
   if (key === 'mix') return mix(g);
   if (key === 'master') return master(g);
@@ -163,6 +164,83 @@ function pads(g) {
       p.c.style.boxShadow = hit > 0.05 ? `0 0 ${(40 * hit).toFixed(0)}px rgba(${r},${g2},${b},${(0.9 * hit).toFixed(2)}), inset 0 0 20px rgba(255,255,255,${(0.3 * hit).toFixed(2)})` : 'none';
       p.c.style.borderColor = head ? 'rgba(220,240,255,.95)' : 'rgba(140,190,255,.35)';
       p.c.style.transform = `scale(${(1 - 0.06 * hit).toFixed(4)})`;
+    }
+  };
+}
+
+// Over a photo the gear steps back to one small, beat-driven accent along the bottom of the card.
+function accent(g, key) {
+  if (key === 'beat') {
+    // 16-step sequencer strip
+    const cells = Array.from({ length: 16 }, (_, s) => {
+      const c = h('div', 'abs', g);
+      Object.assign(c.style, { left: `${50 + s * 45}px`, top: '650px', width: '36px', height: '36px', borderRadius: '8px', border: '2px solid rgba(160,205,255,.45)' });
+      return { c, s, kind: KICKS.includes(s) ? 'kick' : SNARE.includes(s) ? 'snare' : s % 2 === 0 ? 'hat' : 'none' };
+    });
+    return (t) => {
+      const inBar = ((t % BAR) + BAR) % BAR;
+      const step = Math.floor(inBar / S16);
+      for (const p of cells) {
+        let d = inBar - p.s * S16;
+        if (d < 0) d += BAR;
+        const hit = p.kind === 'none' ? 0 : Math.exp(-d * 5) * (p.kind === 'hat' ? 0.6 : 1);
+        const a = 0.15 + 0.8 * hit + (p.s === step ? 0.2 : 0);
+        p.c.style.background = `rgba(${p.kind === 'snare' ? '255,255,255' : '76,184,255'},${a.toFixed(3)})`;
+        p.c.style.boxShadow = hit > 0.05 ? `0 0 ${(24 * hit).toFixed(0)}px rgba(76,184,255,${(0.9 * hit).toFixed(2)})` : 'none';
+      }
+    };
+  }
+  if (key === 'mix') {
+    // stereo meters on the right edge
+    const segs = [0, 1].map((ch) => Array.from({ length: 18 }, (_, s) => {
+      const seg = h('div', 'abs', g);
+      Object.assign(seg.style, { left: `${728 + ch * 30}px`, top: `${690 - s * 30}px`, width: '20px', height: '22px', borderRadius: '4px' });
+      return seg;
+    }));
+    return (t) => {
+      const k = kickEnv(t, 5), sn = snareEnv(t, 6);
+      segs.forEach((col, ch) => {
+        const lvl = clamp(0.3 + 0.55 * Math.max(k, sn * 0.8) + 0.12 * noise1(t * 9 + ch * 4, 6));
+        col.forEach((seg, s) => {
+          const on = s / 18 < lvl;
+          const c = s > 15 ? '#ff4d6a' : s > 11 ? '#7fe3ff' : '#2f8bff';
+          seg.style.background = on ? c : 'rgba(120,160,255,.15)';
+          seg.style.boxShadow = on ? `0 0 10px ${c}` : 'none';
+        });
+      });
+    };
+  }
+  // rec / master: a band of bars along the bottom (waveform for the voice, spectrum for mastering)
+  const NB = 40, spectrum = key === 'master';
+  const bars = Array.from({ length: NB }, (_, i) => {
+    const b = h('div', 'abs', g);
+    Object.assign(b.style, { width: '10px', left: `${60 + i * ((W - 120) / NB)}px`, borderRadius: '5px', background: 'linear-gradient(0deg,#1f5fff,#4cb8ff 60%,#e0f2ff)', boxShadow: '0 0 10px rgba(76,184,255,.6)' });
+    return b;
+  });
+  let recPill = null, dot = null, tc = null;
+  if (key === 'rec') {
+    recPill = h('div', 'abs', g, '<span class="dot" style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#ff3b4e;box-shadow:0 0 14px #ff3b4e;margin-right:14px;vertical-align:-2px"></span><span>REC</span><span class="tc" style="margin-left:18px;font-weight:600;opacity:.85"></span>');
+    Object.assign(recPill.style, { left: '40px', top: '40px', padding: '12px 26px', borderRadius: '999px', background: 'rgba(4,10,40,.7)', border: '2px solid rgba(255,90,110,.6)', fontWeight: '800', fontSize: '32px', letterSpacing: '2px' });
+    dot = recPill.querySelector('.dot'); tc = recPill.querySelector('.tc');
+  }
+  return (t, local) => {
+    const k = kickEnv(t, 7);
+    bars.forEach((b, i) => {
+      const x = i / (NB - 1);
+      let a;
+      if (spectrum) {
+        const shape = 0.95 - 0.55 * x + 0.25 * Math.exp(-Math.pow((x - 0.15) / 0.12, 2));
+        a = clamp(shape * (0.5 + 0.5 * (x < 0.25 ? k : snareEnv(t, 6) * 0.6 + 0.4)) + 0.12 * noise1(t * 6 + i * 0.7, 9));
+      } else {
+        a = clamp(0.1 + Math.sin(Math.PI * x) * (0.35 + 0.55 * Math.abs(noise1(t * 7 + i * 0.6, 2))) * (0.6 + 0.6 * k));
+      }
+      const hgt = 10 + a * (spectrum ? 150 : 120);
+      b.style.height = `${hgt.toFixed(1)}px`;
+      b.style.top = spectrum ? `${(700 - hgt).toFixed(1)}px` : `${(640 - hgt / 2).toFixed(1)}px`;
+    });
+    if (recPill) {
+      dot.style.opacity = (Math.floor(t / BEAT) % 2 === 0 ? 1 : 0.25).toString();
+      tc.textContent = `00:0${Math.min(9, Math.max(0, Math.floor(snap(local))))}`;
     }
   };
 }

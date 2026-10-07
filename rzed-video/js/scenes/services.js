@@ -37,8 +37,8 @@ export function build(root, ctx) {
     Object.assign(shade.style, { width: `${CARD.w}px`, height: `${CARD.h}px`, background: 'linear-gradient(180deg, rgba(2,8,34,0) 45%, rgba(2,8,34,.92) 100%)' });
     const tintC = h('div', 'abs', card);
     Object.assign(tintC.style, { width: `${CARD.w}px`, height: `${CARD.h}px`, background: 'rgba(20,70,255,.18)', mixBlendMode: 'color' });
-    if (m.has) { const dim = h('div', 'abs', card); Object.assign(dim.style, { width: `${CARD.w}px`, height: `${CARD.h}px`, background: 'rgba(2,8,34,.45)' }); }
-    const anim = gear(card, sv.key);
+    if (m.has) { const dim = h('div', 'abs', card); Object.assign(dim.style, { width: `${CARD.w}px`, height: `${CARD.h}px`, background: 'rgba(2,8,34,.18)' }); }
+    const anim = gear(card, sv.key, { photo: m.has });
     const name = h('div', 'abs', card, `<span class="dot" style="width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#3b7bff,#1847d6);box-shadow:0 0 30px rgba(60,130,255,.8)"><span style="width:52px;height:52px;display:block">${icon(ICONS[sv.key], { sw: 2.2 })}</span></span><span class="title" style="font-size:104px;text-shadow:0 4px 30px rgba(0,8,40,.9)">${sv.label}</span>`);
     Object.assign(name.style, { display: 'flex', alignItems: 'center', gap: '28px', left: '50px', top: `${CARD.h - 170}px` });
     fit(name.lastChild, CARD.w - 100 - 124, 104);
