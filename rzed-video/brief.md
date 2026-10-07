@@ -27,7 +27,8 @@
 - Prix Mix / Master / Beatmaking : illisibles sur la planche → non affichés.
 - Sous-textes des packs (durée de validité) : illisibles → non affichés.
 - « Ils sont passés chez Rzed » (artistes, certifications) : pas de photos fournies, on n'invente pas de témoignage.
-- Le logo officiel : pas de fichier fourni → logo typographique provisoire. Déposer le PNG dans `assets/img/logo.png` et l'ajouter à `assets/media.json` (`"logo": {"type":"img","src":"assets/img/logo.png"}`) pour le remplacer partout.
+- Le logo officiel : fourni par le client (cercle chromé, micro, « RZED Records », lueur bleue) → `assets/img/logo.png`,
+  fond noir retiré (la lueur reste translucide). Il remplace le logo typographique provisoire partout.
 
 ## À vérifier par le client
 

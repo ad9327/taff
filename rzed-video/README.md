@@ -93,4 +93,7 @@ chiffres non publiés.
   Higgsfield (même code, cloné depuis cette branche) : clip Kling 3.0 du micro sur l'accroche (7,5 crédits),
   4 photos sur les cartes de services (animations réduites à un accent sur le beat quand une photo est présente).
   La vidéo est déposée dans les médias Higgsfield du client.
+- 2026-10-07 (logo) — vrai logo RZED Records intégré (drop, carte de fin, avatar du chat) avec un reflet qui le balaie
+  après chaque apparition. Rendu complet (photos + clip + logo) refait dans le bac à sable Higgsfield et déposé
+  dans les médias du client ; la copie de `out/` dans ce dépôt est la version sans photos.
 
