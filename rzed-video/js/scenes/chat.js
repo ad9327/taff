@@ -32,13 +32,25 @@ export function build(root, ctx) {
   const head = h('div', 'abs', screen, `
     <div style="display:flex;align-items:center;gap:18px;padding:70px 28px 0 22px;">
       <span style="width:34px;height:34px;opacity:.85">${icon('back', { sw: 2.4, stroke: '#9fc6ff' })}</span>
-      <span style="width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#3b7bff,#0b2170);box-shadow:0 0 0 2px #4cb8ff, 0 0 18px rgba(60,130,255,.8);font-family:Anton;font-size:30px;letter-spacing:1px">RZ</span>
+      <span class="avatar" style="position:relative;overflow:hidden;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#3b7bff,#0b2170);box-shadow:0 0 0 2px #4cb8ff, 0 0 18px rgba(60,130,255,.8);font-family:Anton;font-size:30px;letter-spacing:1px">RZ</span>
       <span style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:700;font-size:30px">${COPY.chatName}</span><span style="font-size:22px;color:#6fd2ff;font-weight:500">● ${COPY.chatStatus}</span></span>
       <span style="flex:1"></span>
       <span style="width:34px;height:34px;opacity:.85">${icon('video', { sw: 2, stroke: '#9fc6ff' })}</span>
       <span style="width:30px;height:30px;opacity:.85;margin-left:14px">${icon('phone', { sw: 2, stroke: '#9fc6ff' })}</span>
     </div>`);
   Object.assign(head.style, { width: '100%', height: `${HEADER}px`, background: 'rgba(14,22,52,.92)', borderBottom: '1px solid rgba(120,170,255,.2)', zIndex: 2 });
+
+  // the studio's logo as the contact picture
+  const av = head.querySelector('.avatar');
+  const avLogo = ctx.media(document.createElement('div'), 'logo');
+  if (avLogo.has) {
+    av.textContent = '';
+    av.style.background = '#02040f';
+    av.appendChild(avLogo.box);
+    Object.assign(avLogo.box.style, { left: '-28%', top: '-26%', width: '156%', height: '156%' });
+    avLogo.img.style.objectFit = 'contain';
+    avLogo.fallback.style.display = 'none';
+  }
 
   // input bar
   const inputBar = h('div', 'abs', screen, `
@@ -67,6 +79,7 @@ export function build(root, ctx) {
   const chipC = chip(COPY.chatChannels);
 
   return (t) => {
+    ctx.wait(avLogo.frame(0));
     const kt = t - CUE.chatIn;
     set(title, { x: 540 - tw_ / 2, y: 190, s: 1.35 - 0.35 * spring(kt + 0.04, 3, 0.5), o: clamp((kt + 0.04) / 0.05), r: -2 });
     wipe(title, ease.outExpo(clamp((kt + 0.04) / 0.3)), 'l');

@@ -17,10 +17,27 @@ export function emblem(parent, ctx, R = 300) {
   const ring = h('div', 'ring', g);
   Object.assign(ring.style, { left: '0px', top: '0px', width: `${2 * R}px`, height: `${2 * R}px`, borderWidth: `${R * 0.035}px` });
   const logoMedia = ctx.media(g, 'logo');
-  Object.assign(logoMedia.box.style, { left: `${-R * 0.25}px`, top: `${-R * 0.25}px`, width: `${2.5 * R}px`, height: `${2.5 * R}px` });
   logoMedia.img.style.objectFit = 'contain';
   logoMedia.fallback.style.display = 'none';
-  const parts = { g, disc, ring, logoMedia, word: null, ribbon: null, mic: null };
+  let shine = null;
+  if (logoMedia.has) {
+    // The client's logo brings its own ring: drop ours, keep a dark backing so its black inlines stay black,
+    // and centre the logo's ring (at 50.6 % / 51 % of the file) on the emblem's centre.
+    ring.style.display = 'none';
+    const L = R * 3.125;
+    Object.assign(logoMedia.box.style, { left: `${R - L * 0.506}px`, top: `${R - L * 0.51}px`, width: `${L}px`, height: `${L}px` });
+    Object.assign(disc.style, { left: `${R - L * 0.5}px`, top: `${R - L * 0.48}px`, width: `${L}px`, height: `${L * 0.92}px`, boxShadow: 'none',
+      background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,3,16,.94) 55%, rgba(0,3,16,0) 100%)' });
+    // a light sweep that only touches the logo's own pixels
+    const mask = h('div', 'abs', logoMedia.box);
+    Object.assign(mask.style, { width: '100%', height: '100%', overflow: 'hidden', mixBlendMode: 'screen',
+      WebkitMaskImage: `url(${logoMedia.src})`, maskImage: `url(${logoMedia.src})`, WebkitMaskSize: 'contain', maskSize: 'contain',
+      WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center' });
+    shine = h('div', 'abs', mask);
+    Object.assign(shine.style, { width: `${L * 0.5}px`, height: `${L * 1.4}px`, top: `${-L * 0.2}px`,
+      background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(220,240,255,.85) 50%, rgba(255,255,255,0) 100%)' });
+  }
+  const parts = { g, disc, ring, logoMedia, shine, L: R * 3.125, word: null, ribbon: null, mic: null };
   if (!logoMedia.has) {
     logoMedia.box.style.display = 'none';
     const mic = h('div', 'abs', g, icon('mic', { stroke: '#d6ebff', sw: 1.6 }));
@@ -38,6 +55,15 @@ export function emblem(parent, ctx, R = 300) {
     Object.assign(parts, { word: wordWrap, ribbon, mic });
   }
   return parts;
+}
+
+// Show the logo file (once loaded) and sweep the shine: `since` seconds after the slam, again every `every` seconds.
+export function emblemFrame(em, ctx, since, every) {
+  ctx.wait(em.logoMedia.frame(0));
+  if (!em.shine) return;
+  const cyc = since < 0 ? -1 : since % every;
+  const k = clamp(cyc / 0.7);
+  set(em.shine, { x: -em.L * 0.6 + em.L * 1.7 * ease.inOutCubic(k), r: 18, o: since >= 0 && k < 1 ? 1 : 0 });
 }
 
 export function build(root, ctx) {
@@ -87,6 +113,7 @@ export function build(root, ctx) {
     shock.style.opacity = k >= 0 ? (1 - sk).toFixed(3) : '0';
     shock.style.visibility = k >= 0 && sk < 1 ? 'visible' : 'hidden';
 
+    emblemFrame(em, ctx, k - 0.35, BEAT * 8);
     // emblem slam
     const float = Math.sin(t * 1.7) * 9 + noise1(t * 0.8, 3) * 4;
     if (k < 0) set(holder, { o: 0 });

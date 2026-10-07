@@ -3,7 +3,7 @@ import { CUE, b, BEAT, DURATION } from '../timeline.mjs';
 import { COPY } from '../copy.mjs';
 import { clamp, ease, spring, set, h, wipe, beatPulse, fit } from '../engine.js';
 import { icon } from '../icons.js';
-import { emblem } from './logo.js';
+import { emblem, emblemFrame } from './logo.js';
 
 export function build(root, ctx) {
   const glow = h('div', 'abs', root);
@@ -48,6 +48,7 @@ export function build(root, ctx) {
     const pulse = beatPulse(t, BEAT, CUE.endIn, 6);
     set(glow, { o: 0.6 + 0.4 * Math.exp(-2 * Math.max(0, k)) + 0.2 * pulse, s: 1 + 0.05 * pulse });
 
+    emblemFrame(em, ctx, k - 0.3, BEAT * 8);
     const se = spring(k + 0.05, 2.6, 0.5);
     set(holder, { x: 540, y: 420 + Math.sin(t * 1.7) * 7, s: (0.3 + 0.7 * se) * (1 + 0.03 * pulse), o: clamp((k + 0.05) / 0.06) });
     if (em.word) set(em.word, { s: 1, o: 1 });

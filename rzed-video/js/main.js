@@ -42,7 +42,7 @@ function makeMedia(manifest, parent, name, cls = '') {
   if (!m) img.style.display = 'none';
   let last = '';
   return {
-    box, img, fallback: fb, has: !!m,
+    box, img, fallback: fb, has: !!m, src: m && m.type === 'img' ? m.src : '',
     // Show the frame of the clip at `lt` seconds (or the still). Returns a decode promise when the source changed.
     frame(lt) {
       if (!m) return null;
