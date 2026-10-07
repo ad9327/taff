@@ -40,7 +40,14 @@ Besoins : Node 22, ffmpeg, Playwright + Chromium (aucun paquet npm à installer 
 ```
 
 Le plus simple : `node tools/add-media.mjs <nom> <fichier>` (image ou clip ; un clip est interpolé à 60 fps
-et découpé en images). Exemple : `node tools/add-media.mjs logo logo-rzed.png`.
+et découpé en images). Il écrit dans `assets/media.local.json`, qui reste hors de git avec les images et clips,
+et complète `assets/media.json` (versionné, il ne contient que le logo). Noms lus par les scènes :
+`mic` (accroche), `singer`, `console`, `monitors`, `pads` (cartes Enregistrement, Mixage, Mastering, Beatmaking),
+`cite` (fond de « Écris-nous »), `logo`.
+
+Plans du client utilisés pour le rendu actuel : rappeur devant l'anneau néon (accroche), rappeur au micro
+(Enregistrement), faders + néon RZED (Mixage), console + écrans (Mastering), mains sur le clavier (Beatmaking),
+téléphone dans la cité (Écris-nous).
 
 Les fichiers Higgsfield (images, clips) ne sont pas versionnés : ils restent dans le compte Higgsfield du client.
 
@@ -96,4 +103,7 @@ chiffres non publiés.
 - 2026-10-07 (logo) — vrai logo RZED Records intégré (drop, carte de fin, avatar du chat) avec un reflet qui le balaie
   après chaque apparition. Rendu complet (photos + clip + logo) refait dans le bac à sable Higgsfield et déposé
   dans les médias du client ; la copie de `out/` dans ce dépôt est la version sans photos.
+- 2026-10-07 (clips du client) — 5 clips + 5 images Higgsfield fournis par le client : l'anneau de l'accroche se pose
+  sur le halo néon du premier clip et ouvre l'iris vers le logo ; « Écris-nous » s'ouvre sur la cité avant que le
+  téléphone monte. Rendu fait ici, les médias restent hors du dépôt.
 
