@@ -27,7 +27,7 @@ export const CARS = [
     shots: ['sl_a', 'sl_b', 'sl_c', 'sl_e', 'sl_f'] },
   { id: 'm5', make: 'BMW', model: 'M5 TOURING', price: 700,
     convoy: { frame: 53, box: [34, 604, 309, 749] },
-    shots: ['m5_a', { clip: 'm5_walk', frames: 96 }, 'm5_c', 'm5_d', 'm5_f'] },
+    shots: ['m5_a', { clip: 'm5_walk', frames: 96, zoom: 1.2, focus: [540, 300] }, 'm5_c', 'm5_d', 'm5_f'] },
   { id: 'golf', make: 'VOLKSWAGEN', model: 'GOLF 8 R', price: 250,
     convoy: { frame: 76, box: [57, 598, 355, 749] },
     shots: ['golf_f', 'golf_b', 'golf_mad', { clip: 'golf_dash', frames: 96 }, 'golf_a'] },

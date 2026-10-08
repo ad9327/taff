@@ -57,8 +57,9 @@ export function build(root, ctx) {
       const push = n % 2 === 0 ? 1.14 - 0.08 * ease.outCubic(u) : 1.05 + 0.08 * ease.inOutCubic(u);
       const punch = n === 0 ? 1 + 0.45 * Math.exp(-14 * ks) : 1 + 0.1 * Math.exp(-16 * ks);
       const dx = (n % 2 ? 1 : -1) * 18 * (u - 0.5);
-      set(s.box, { s: push * punch, x: dx, blur: n === 0 ? 10 * Math.exp(-30 * ks) : 3 * Math.exp(-40 * ks) });
-      s.box.style.transformOrigin = '540px 980px';
+      const fz = (s.clip && s.clip.zoom) || 1;
+      set(s.box, { s: push * punch * fz, x: dx, blur: n === 0 ? 10 * Math.exp(-30 * ks) : 3 * Math.exp(-40 * ks) });
+      s.box.style.transformOrigin = s.clip && s.clip.focus ? `${s.clip.focus[0]}px ${s.clip.focus[1]}px` : '540px 980px';
       if (s.clip) {
         const f = clamp(Math.floor(ks * 60), 0, s.clip.frames - 1);
         const src = `assets/media/clips/${s.clip.clip}/${pad(f + 1)}.jpg`;
