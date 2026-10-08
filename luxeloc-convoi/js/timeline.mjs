@@ -14,7 +14,7 @@ export const H = 1920;
 export const b = (n) => n * BEAT;
 
 
-export const HOLO_BEATS = 2;           // punch-in + hologram
+export const HOLO_BEATS = 3;           // punch-in + hologram + the specs
 
 // Convoy clip (assets/media/convoy: 7.55 s at 60 fps) and the moment each car is best framed in it.
 export const CONVOY_LEN = 7.55;

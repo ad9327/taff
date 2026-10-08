@@ -1,9 +1,9 @@
-# LuxeLocResa93 — le convoi (TikTok 9:16, 42,9 s)
+# LuxeLocResa93 — le convoi (TikTok 9:16, 47,6 s)
 
 Le convoi roule. À chaque voiture qui arrive : la visée se verrouille, la caméra zoome d'un coup sur elle, son nom
-s'allume en hologramme au-dessus du toit, puis défilent ses photos et vidéos avec son prix. Ensuite on revient au
-convoi jusqu'à la suivante. La RS4 et la RS7 ne sont pas dans le convoi : elles arrivent après, sur leur photo, avec
-le même zoom et le même hologramme. Carte de fin : RÉSERVE TA VOITURE — EN DM et les réseaux.
+s'allume en hologramme au-dessus du toit et ses caractéristiques montent en HUD sous elle, puis défilent ses photos
+et vidéos, avec la fiche tarifs bleue (prix + caution). Ensuite on revient au convoi jusqu'à la suivante. La RS4 et la RS7 ne sont pas dans le convoi : elles arrivent après, sur leur photo, avec
+le même zoom et le même hologramme. Carte de fin : RÉSERVE TA VOITURE, dès 250 €, les documents à fournir, CONTACTEZ-NOUS DÈS MAINTENANT et les réseaux.
 
 Même moteur que `luxeloc-video/` : chaque image est une fonction du temps rendue dans Chrome headless, la musique
 est composée et synthétisée sur la même grille de tempo.
@@ -18,10 +18,10 @@ node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
 
 ## Modifier
 
-- **Prix, noms, photos de chaque voiture** : `js/copy.mjs` (`CARS`). Les prix viennent des fiches Snapchat du
-  client (24 h en semaine).
+- **Prix, caution, caractéristiques, noms, photos de chaque voiture** : `js/copy.mjs` (`CARS` : `rates`, `caution`,
+  `specs`). Les prix et cautions viennent des fiches du client ; `specs: null` = pas de ligne de caractéristiques.
 - **Réseaux, textes** : `js/copy.mjs` (`COPY`).
-- **Timing** : `js/timeline.mjs` (140 BPM ; 2 temps d'hologramme, puis le défilé dont chaque plan a sa durée en temps
+- **Timing** : `js/timeline.mjs` (140 BPM ; 3 temps d'hologramme, puis le défilé dont chaque plan a sa durée en temps
   dans `CARS[].shots` — 8 temps pour les voitures qui ont des vidéos, 6 pour les autres ; tout le reste se recalcule).
 - **Son** : `audio/score.mjs` (un moteur par voiture dans `ENGINES`).
 
@@ -34,7 +34,7 @@ node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
 | `cars/` | les photos du défilé (story Snapchat du client recadrée, ses photos, plaques couvertes par une plaque LUXELOCRESA93) |
 | `clips/` | extraits vidéo en images 60 i/s : `sl_night`, `sl_drive` (SL, recadré sans le logo LUXELOC75), `m5_walk` (plaque suivie et couverte), `m5_hood`, `golf_side`, `golf_dash`, `rs7_pan` |
 
-Ordre dans le convoi : SL 805, M5 Touring, Golf 8 R, 911 GT3, RS5, RS6 Avant ; puis RS4 Avant et RS7 Sportback.
+Ordre dans le convoi : SL 63 S E Performance, M5 Touring, Golf 8 R, 911 GT3, RS5, RS6 Avant ; puis RS4 Avant et RS7 Sportback.
 
 ## Direction
 

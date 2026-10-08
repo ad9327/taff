@@ -1,9 +1,10 @@
 // The hologram: target brackets lock onto the car as it arrives, the camera punches in, a scan line sweeps the car
 // and leaves a light grid on it, an emitter on the roof throws a beam up, and the car's name flickers into being in
-// the beam — cyan, scan-lined, with a chromatic ghost and glitch slices on its way in.
+// the beam — cyan, scan-lined, with a chromatic ghost and glitch slices on its way in. Then the specs come up under
+// the car as a HUD stack in white: a cyan bar grows, the line wipes in, the figures count up.
 import { CARS } from '../copy.mjs';
 import { SEG, segAt, view, carBox, xfBox, zoomXf, PUNCH, DIVE } from '../rig.js';
-import { clamp, ease, set, h, fit, hash, noise1, spring } from '../engine.js';
+import { clamp, ease, set, h, fit, hash, noise1, spring, wipe } from '../engine.js';
 
 const CY = '120,240,255';
 const LOCK = 0.38;      // the brackets home in during the last LOCK s before the hit
@@ -28,7 +29,15 @@ export function build(root) {
     const ghosts = ['r', 'b'].map((k) => { const e = h('div', `abs holo-text ghost-${k}`, g, c.model); e.style.fontSize = `${ms}px`; return e; });
     const slices = [0, 1, 2].map(() => { const e = h('div', 'abs holo-text', g, c.model); e.style.fontSize = `${ms}px`; return e; });
     const id = h('div', 'abs holo-id', g, `VÉHICULE ${String(i + 1).padStart(2, '0')} / ${String(CARS.length).padStart(2, '0')}`);
-    return { g, mk, model, mw, mh, ghosts, slices, id: { el: id, w: id.scrollWidth } };
+    const specs = (c.specs ? c.specs.split(' · ') : []).map((line) => {
+      const el = h('div', 'abs holo-spec', g);
+      const bar = h('span', 'bar', el);
+      const txt = h('span', 'txt', el, line);
+      const m = line.match(/^(\d[\d ]*)( (?:CH|NM))$/);
+      return { el, bar, txt, line, num: m ? parseInt(m[1].replace(/ /g, ''), 10) : null, unit: m ? m[2] : '' };
+    });
+    const sw = Math.max(0, ...specs.map((x) => x.el.scrollWidth));
+    return { g, mk, model, mw, mh, ghosts, slices, id: { el: id, w: id.scrollWidth }, specs, sw };
   });
 
   // the holo segment about to start (for the lock-on), if t is in the last LOCK s before it
@@ -139,5 +148,19 @@ export function build(root) {
     });
     const ki = k - 0.5;
     set(T.id.el, { x: cx - T.id.w / 2, y: modelY + T.mh + 6, o: (ki > 0 ? clamp(ki / 0.08) * 0.9 : 0) * out });
+
+    // the specs, a HUD stack under the car
+    const LH = 54;
+    const sy0 = Math.min(y1 + 40, 1660 - T.specs.length * LH);
+    T.specs.forEach((sp2, n) => {
+      const kk = k - 0.62 - n * 0.08;
+      set(sp2.el, { x: 540 - T.sw / 2 + 24 * (1 - ease.outCubic(clamp(kk / 0.25))), y: sy0 + n * LH, o: clamp(kk / 0.05) * out });
+      wipe(sp2.txt, ease.outExpo(clamp((kk - 0.03) / 0.3)), 'l');
+      sp2.bar.style.transform = `scaleY(${ease.outBack(clamp(kk / 0.18)).toFixed(3)})`;
+      if (sp2.num != null) {
+        const v = Math.round(sp2.num * ease.outCubic(clamp(kk / 0.35)));
+        sp2.txt.textContent = `${v >= 1000 ? String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : v}${sp2.unit}`;
+      }
+    });
   };
 }

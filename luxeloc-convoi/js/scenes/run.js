@@ -30,6 +30,7 @@ export function build(root, ctx) {
     const make = h('div', 'abs run-make', g, `<span class="idx">${String(i + 1).padStart(2, '0')}/${String(CARS.length).padStart(2, '0')}</span>${c.make}`);
     const model = chrome(g, c.model, 92, 900);
     const spec = c.specs ? h('div', 'abs run-spec', g, c.specs) : null;
+    if (spec) fit(spec, 950, 26);
     const ticks = shots.map(() => h('div', 'abs run-tick', g));
 
     const card = h('div', 'rate-card', g);
