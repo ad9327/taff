@@ -81,7 +81,7 @@ try {
     }));
     console.log(`frames ${first}–${last} at ${fps} fps in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
   } else if (cmd === 'verify') {
-    const ts = [0.3, 0.8, 1.2, 2.1, 4.4, 4.5, 9.9, 15.2, 27.9, 28.9, 33.1, 37.0];
+    const ts = [0.3, 0.8, 1.2, 2.8, 3.9, 8.4, 9.2, 13.5, 14.8, 31.2, 36.6, 41.0];
     const shots = async (order) => {
       const page = await openPage(browser, url);
       const res = {};

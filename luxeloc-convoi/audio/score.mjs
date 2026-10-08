@@ -5,8 +5,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_BEATS, END_AT } from '../js/timeline.mjs';
-import { CARS } from '../js/copy.mjs';
+import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT } from '../js/timeline.mjs';
+import { CARS, shotSpans } from '../js/copy.mjs';
 import { SR, Bus, mtof, rng, kick, eight, snare, clap, hat, pad, bell, whoosh, riser, impact, blip, crackle, noise, sweepFilter, biquad, reverb, writeWav } from './synth.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -222,12 +222,12 @@ HITS.forEach((hb, i) => {
   // the dive into the run, a tick on every cut
   const run = hit + b(HOLO_BEATS);
   sfx.add(whoosh({ dur: 0.3, f0: 2000, f1: 300, peak: 0.2, seed: 370 + i }), run - 0.12, 0.35);
-  const n = c.shots.length;
-  const span = n === 5 ? [2, 1, 1, 1] : n === 4 ? [2, 1, 1] : [];
-  let a = 0;
-  for (const d of span) { a += d; sfx.add(tick(380 + i), run + b(a), 0.35, 0.4); sfx.add(whoosh({ dur: 0.18, f0: 1500, f1: 5000, peak: 0.5, seed: 390 + i + a }), run + b(a) - 0.1, 0.16, -0.4); }
+  shotSpans(c).slice(1).forEach(([a], k) => {
+    sfx.add(tick(380 + i), run + b(a), 0.35, 0.4);
+    sfx.add(whoosh({ dur: 0.18, f0: 1500, f1: 5000, peak: 0.5, seed: 390 + i * 7 + k }), run + b(a) - 0.1, 0.16, -0.4);
+  });
   // the pull-back to the convoy (not after the arrivals)
-  const back = run + b(RUN_BEATS);
+  const back = b(RUN_END[i]);
   if (c.convoy) sfx.add(pullBack(400 + i), back, 0.5);
 });
 

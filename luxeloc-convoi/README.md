@@ -1,4 +1,4 @@
-# LuxeLocResa93 — le convoi (TikTok 9:16, 39,4 s)
+# LuxeLocResa93 — le convoi (TikTok 9:16, 42,9 s)
 
 Le convoi roule. À chaque voiture qui arrive : la visée se verrouille, la caméra zoome d'un coup sur elle, son nom
 s'allume en hologramme au-dessus du toit, puis défilent ses photos et vidéos avec son prix. Ensuite on revient au
@@ -21,8 +21,8 @@ node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
 - **Prix, noms, photos de chaque voiture** : `js/copy.mjs` (`CARS`). Les prix viennent des fiches Snapchat du
   client (24 h en semaine).
 - **Réseaux, textes** : `js/copy.mjs` (`COPY`).
-- **Timing** : `js/timeline.mjs` (140 BPM ; `HITS` = le temps où chaque voiture est zoomée, 2 temps d'hologramme,
-  6 temps de défilé).
+- **Timing** : `js/timeline.mjs` (140 BPM ; 2 temps d'hologramme, puis le défilé dont chaque plan a sa durée en temps
+  dans `CARS[].shots` — 8 temps pour les voitures qui ont des vidéos, 6 pour les autres ; tout le reste se recalcule).
 - **Son** : `audio/score.mjs` (un moteur par voiture dans `ENGINES`).
 
 ## Médias (hors git : `assets/media/`)
@@ -32,7 +32,7 @@ node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
 | `convoy/` | la vidéo Higgsfield du convoi passée en 1080×1920 et 60 i/s (interpolation) |
 | `freeze/` | l'image du convoi au moment du zoom pour chaque voiture, agrandie ×3, plaque couverte |
 | `cars/` | les photos du défilé (story Snapchat du client recadrée, ses photos, plaques couvertes par une plaque LUXELOCRESA93) |
-| `clips/` | deux extraits vidéo en images 60 i/s : `m5_walk` (M5 Touring), `golf_dash` (Golf 8 R) |
+| `clips/` | extraits vidéo en images 60 i/s : `sl_night`, `sl_drive` (SL, recadré sans le logo LUXELOC75), `m5_walk` (plaque suivie et couverte), `m5_hood`, `golf_side`, `golf_dash`, `rs7_pan` |
 
 Ordre dans le convoi : SL 805, M5 Touring, Golf 8 R, 911 GT3, RS5, RS6 Avant ; puis RS4 Avant et RS7 Sportback.
 

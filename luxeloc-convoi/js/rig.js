@@ -1,7 +1,7 @@
 // The camera on the convoy: which picture is up at time t (a convoy frame, a car's freeze frame, an arrival photo),
 // at which convoy time, and the punch-in transform onto the car being presented.
-import { b, BEAT, W, H, CONVOY_LEN, RUN_BEATS, segments } from './timeline.mjs';
-import { CARS, convoyTime } from './copy.mjs';
+import { b, BEAT, W, H, CONVOY_LEN, segments } from './timeline.mjs';
+import { CARS, convoyTime, shotSpans } from './copy.mjs';
 import { clamp, ease, lerp } from './engine.js';
 
 export const SEG = segments(CARS.map(convoyTime));
@@ -70,22 +70,13 @@ export function view(t) {
   return { g, src: 'none' };
 }
 
-// the run: shot boundaries in beats from its start
-export function runShots(n) {
-  const d = n === 5 ? [2, 1, 1, 1, 1] : n === 4 ? [2, 1, 1, 2] : Array(n).fill(RUN_BEATS / n);
-  const out = [];
-  let a = 0;
-  for (const x of d) { out.push([a, a + x]); a += x; }
-  return out;
-}
-
 // moments that flash / shake the frame
 export const FLASHES = [];
 export const HITS_T = [];
 for (const g of SEG) {
   if (g.kind === 'holo') { FLASHES.push([g.a, 0.55, 12]); HITS_T.push(g.a); FLASHES.push([g.z - 0.02, 0.85, 14]); }
   if (g.kind === 'run') {
-    runShots(CARS[g.car].shots.length).slice(1).forEach(([a]) => FLASHES.push([g.a + b(a), 0.22, 16]));
+    shotSpans(CARS[g.car]).slice(1).forEach(([a]) => FLASHES.push([g.a + b(a), 0.22, 16]));
   }
   if (g.kind === 'play' && g.from >= 0) FLASHES.push([g.a, 0.6, 11]);
   if (g.kind === 'arrive') FLASHES.push([g.a, 0.7, 10]);

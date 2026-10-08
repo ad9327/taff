@@ -1,8 +1,8 @@
 // The run: the car's photos and clips cut on the beat, each with a slow push or pull, the name top-left
 // (make in gold, model in chrome, its number in the fleet), a progress tick per shot, and the price bottom-left.
-import { CARS, COPY } from '../copy.mjs';
+import { CARS, COPY, shotSpans } from '../copy.mjs';
 import { b } from '../timeline.mjs';
-import { segAt, runShots } from '../rig.js';
+import { segAt } from '../rig.js';
 import { clamp, ease, spring, set, h, wipe } from '../engine.js';
 import { chrome } from './ui.js';
 
@@ -11,7 +11,7 @@ const pad = (n) => String(n).padStart(4, '0');
 export function build(root, ctx) {
   const cars = CARS.map((c, i) => {
     const g = h('div', 'abs', root);
-    const shots = c.shots.map((s) => {
+    const shots = c.shots.map(([s]) => {
       const box = h('div', 'shot', g);
       Object.assign(box.style, { width: '1080px', height: '1920px' });
       const img = h('img', '', box);
@@ -20,7 +20,7 @@ export function build(root, ctx) {
       if (!clip) img.src = `assets/media/cars/${s}.jpg`;
       return { box, img, clip, last: '' };
     });
-    const span = runShots(shots.length);
+    const span = shotSpans(c);
 
     const topShade = h('div', 'abs shade-top', g);
     const botShade = h('div', 'abs shade-bot', g);
@@ -61,7 +61,7 @@ export function build(root, ctx) {
       set(s.box, { s: push * punch * fz, x: dx, blur: n === 0 ? 10 * Math.exp(-30 * ks) : 3 * Math.exp(-40 * ks) });
       s.box.style.transformOrigin = s.clip && s.clip.focus ? `${s.clip.focus[0]}px ${s.clip.focus[1]}px` : '540px 980px';
       if (s.clip) {
-        const f = clamp(Math.floor(ks * 60), 0, s.clip.frames - 1);
+        const f = clamp((s.clip.from || 0) + Math.floor(ks * 60), 0, s.clip.frames - 1);
         const src = `assets/media/clips/${s.clip.clip}/${pad(f + 1)}.jpg`;
         if (src !== s.last) { s.img.src = src; s.last = src; ctx.wait(s.img.decode().catch(() => {})); }
       }
