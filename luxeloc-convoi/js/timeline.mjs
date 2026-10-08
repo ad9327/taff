@@ -37,8 +37,14 @@ export const HITS = [];
     else hb = end + ARRIVAL_PRE;
   });
 }
-export const END_AT = RUN_END[RUN_END.length - 1];
-export const DURATION = b(END_AT + 12);
+// the phone: it rises off the table (PHONE_RISE beats), its screen lights up on the Snapchat profile, swipes to
+// the WhatsApp chat; then the end card
+export const PHONE_AT = RUN_END[RUN_END.length - 1];
+export const PHONE_RISE = 6;
+export const PHONE_SWIPE = 9;          // beats into the phone: Snapchat → WhatsApp
+export const PHONE_BEATS = 12;
+export const END_AT = PHONE_AT + PHONE_BEATS;
+export const DURATION = b(END_AT + 10);
 
 // Segments, in order: { kind: 'play' | 'holo' | 'run' | 'arrive' | 'end', car, a, z (seconds), c0, c1 (convoy s) }
 export function segments(convoyHits) {
@@ -61,6 +67,7 @@ export function segments(convoyHits) {
     prevBeat = RUN_END[i];
     prevCar = i;
   });
+  S.push({ kind: 'phone', car: -1, a: b(PHONE_AT), z: b(END_AT) });
   S.push({ kind: 'end', car: -1, a: b(END_AT), z: DURATION });
   return S;
 }

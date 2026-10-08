@@ -80,6 +80,7 @@ for (const g of SEG) {
   }
   if (g.kind === 'play' && g.from >= 0) FLASHES.push([g.a, 0.6, 11]);
   if (g.kind === 'arrive') FLASHES.push([g.a, 0.7, 10]);
+  if (g.kind === 'phone') { FLASHES.push([g.a, 0.8, 9]); HITS_T.push(g.a); FLASHES.push([g.a + b(5), 0.35, 10]); }
   if (g.kind === 'end') { FLASHES.push([g.a, 0.9, 7]); HITS_T.push(g.a); }
 }
 export const beat = BEAT;

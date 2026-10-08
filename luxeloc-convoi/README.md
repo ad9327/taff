@@ -1,9 +1,10 @@
-# LuxeLocResa93 — le convoi (TikTok 9:16, 47,6 s)
+# LuxeLocResa93 — le convoi (TikTok 9:16, 51,9 s)
 
 Le convoi roule. À chaque voiture qui arrive : la visée se verrouille, la caméra zoome d'un coup sur elle, son nom
 s'allume en hologramme au-dessus du toit et ses caractéristiques montent en HUD sous elle, puis défilent ses photos
 et vidéos, avec la fiche tarifs bleue (prix + caution). Ensuite on revient au convoi jusqu'à la suivante. La RS4 et la RS7 ne sont pas dans le convoi : elles arrivent après, sur leur photo, avec
-le même zoom et le même hologramme. Carte de fin : RÉSERVE TA VOITURE, dès 250 €, les documents à fournir, CONTACTEZ-NOUS DÈS MAINTENANT et les réseaux.
+le même zoom et le même hologramme. Puis le téléphone (cinématique Higgsfield) se lève sous RÉSERVE EN UN MESSAGE,
+son écran s'allume sur le profil Snapchat du client puis glisse sur sa conversation WhatsApp. Carte de fin : RÉSERVE TA VOITURE, dès 250 €, les documents à fournir, CONTACTEZ-NOUS DÈS MAINTENANT et les réseaux.
 
 Même moteur que `luxeloc-video/` : chaque image est une fonction du temps rendue dans Chrome headless, la musique
 est composée et synthétisée sur la même grille de tempo.
@@ -32,6 +33,7 @@ node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
 | `convoy/` | la vidéo Higgsfield du convoi passée en 1080×1920 et 60 i/s (interpolation) |
 | `freeze/` | l'image du convoi au moment du zoom pour chaque voiture, agrandie ×3, plaque couverte |
 | `cars/` | les photos du défilé (story Snapchat du client recadrée, ses photos, plaques couvertes par une plaque LUXELOCRESA93) |
+| `phone/`, `phone_on/`, `phone_hold/` | la cinématique du téléphone recadrée en 9:16 et 60 i/s (`tools/clean-phone-status.py` efface la fausse barre d'état), puis l'écran allumé incrusté image par image (`tools/bake-phone.py <snap.png> <whatsapp.png>`) |
 | `clips/` | extraits vidéo en images 60 i/s : `sl_night`, `sl_drive` (SL, recadré sans le logo LUXELOC75), `m5_walk` (plaque suivie et couverte), `m5_hood`, `golf_side`, `golf_dash`, `rs7_pan` |
 
 Ordre dans le convoi : SL 63 S E Performance, M5 Touring, Golf 8 R, 911 GT3, RS5, RS6 Avant ; puis RS4 Avant et RS7 Sportback.

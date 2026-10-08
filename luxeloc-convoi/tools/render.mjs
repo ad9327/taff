@@ -35,7 +35,7 @@ if (draft) {
   run('ffmpeg', ['-v', 'error', '-y', '-i', out, '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-maxrate', '6M', '-bufsize', '12M',
     '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', web]);
   fs.mkdirSync(path.join(ROOT, 'out/covers'), { recursive: true });
-  for (const [name, t] of [['cover-intro', 0.05], ['cover-holo', 1.5], ['cover-end', 46.8]]) {
+  for (const [name, t] of [['cover-intro', 0.05], ['cover-holo', 1.5], ['cover-phone', 45.6], ['cover-end', 51.0]]) {
     run('ffmpeg', ['-v', 'error', '-y', '-ss', String(t), '-i', out, '-frames:v', '1', path.join(ROOT, `out/covers/${name}.png`)]);
   }
   console.log(out, web);

@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT } from '../js/timeline.mjs';
+import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT, PHONE_AT, PHONE_SWIPE } from '../js/timeline.mjs';
 import { CARS, COPY, shotSpans } from '../js/copy.mjs';
 const COPY_SOCIALS = COPY.socials;
 import { SR, Bus, mtof, rng, kick, eight, snare, clap, hat, pad, bell, whoosh, riser, impact, blip, crackle, noise, sweepFilter, biquad, reverb, writeWav } from './synth.mjs';
@@ -235,6 +235,19 @@ HITS.forEach((hb, i) => {
   const back = b(RUN_END[i]);
   if (c.convoy) sfx.add(pullBack(400 + i), back, 0.5);
 });
+
+// ---------- the phone: a low sweep as it comes in, it powers on (a chime), the swipe, WhatsApp's pop ----------
+{
+  const P = b(PHONE_AT);
+  sfx.add(whoosh({ dur: 0.7, f0: 200, f1: 3000, peak: 0.5, seed: 601 }), P - 0.35, 0.4);
+  sfx.add(impact({ dur: 1.2, f0: 110, f1: 36, seed: 603 }), P, 0.7);
+  const on = P + b(5);
+  sfx.add(blip({ f0: 900, f1: 1400, dur: 0.09 }), on - 0.02, 0.2);
+  [76, 83, 88, 92].forEach((m, j) => { const v = bell({ f: mtof(m), dur: 0.9, ratio: 2, index: 1.4, decay: 5, bright: 0.8 }); sfx.add(v, on + j * 0.06, 0.13, -0.2 + 0.15 * j); send.add(v, on + j * 0.06, 0.25); });
+  const sw = P + b(PHONE_SWIPE);
+  sfx.add(whoosh({ dur: 0.3, f0: 3000, f1: 800, peak: 0.4, seed: 607 }), sw - 0.05, 0.32, 0.3);
+  [[88, 0], [95, 0.09]].forEach(([m, d]) => { const v = bell({ f: mtof(m), dur: 0.5, ratio: 1, index: 0.6, decay: 9, bright: 1 }); sfx.add(v, sw + 0.3 + d, 0.16); });
+}
 
 // ---------- end card ----------
 {

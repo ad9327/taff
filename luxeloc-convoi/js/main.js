@@ -6,9 +6,10 @@ import * as holo from './scenes/holo.js';
 import * as run from './scenes/run.js';
 import * as intro from './scenes/intro.js';
 import * as end from './scenes/end.js';
+import * as phone from './scenes/phone.js';
 
 // bottom to top
-const LAYERS = [['pic', pic], ['holo', holo], ['run', run], ['intro', intro], ['end', end]];
+const LAYERS = [['pic', pic], ['holo', holo], ['run', run], ['intro', intro], ['phone', phone], ['end', end]];
 
 function grainTile() {
   const c = document.createElement('canvas');

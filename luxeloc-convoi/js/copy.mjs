@@ -12,11 +12,14 @@ export const COPY = {
   docsTitle: 'À FOURNIR :',
   docs: ['PERMIS DE CONDUIRE', "CARTE D'IDENTITÉ", 'JUSTIFICATIF DE DOMICILE'],
   contact: ['CONTACTEZ-NOUS', 'DÈS MAINTENANT'],
+  // the accounts shown on the phone (the client's own screenshots) and on the end card
   socials: [
-    { net: 'snap', handle: 'Luxeloc75' },
-    { net: 'tiktok', handle: 'luxeloc75' },
-    { net: 'insta', handle: 'LuxeLoc75' },
+    { net: 'snap', handle: 'luxeloccresa75x' },
+    { net: 'whatsapp', handle: 'Luxeloccresa75x' },
   ],
+  phoneTitle: ['RÉSERVE EN', 'UN MESSAGE'],
+  phoneSnap: ['AJOUTE-NOUS SUR SNAPCHAT', 'luxeloccresa75x'],
+  phoneWa: ['ÉCRIS-NOUS SUR WHATSAPP', 'Luxeloccresa75x'],
 };
 
 // convoy: the frame (original 24 fps index) where the car is hit, and its box in the 720×1280 source.
