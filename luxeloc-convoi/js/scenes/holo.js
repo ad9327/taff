@@ -156,7 +156,7 @@ export function build(root) {
       const kk = k - 0.62 - n * 0.08;
       set(sp2.el, { x: 540 - T.sw / 2 + 24 * (1 - ease.outCubic(clamp(kk / 0.25))), y: sy0 + n * LH, o: clamp(kk / 0.05) * out });
       wipe(sp2.txt, ease.outExpo(clamp((kk - 0.03) / 0.3)), 'l');
-      sp2.bar.style.transform = `scaleY(${ease.outBack(clamp(kk / 0.18)).toFixed(3)})`;
+      sp2.bar.style.height = `${(36 * clamp(ease.outBack(clamp(kk / 0.18)), 0, 1.2)).toFixed(1)}px`;   // height, not a scale: no cached raster
       if (sp2.num != null) {
         const v = Math.round(sp2.num * ease.outCubic(clamp(kk / 0.35)));
         sp2.txt.textContent = `${v >= 1000 ? String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : v}${sp2.unit}`;
