@@ -15,11 +15,11 @@ export const COPY = {
   // the accounts shown on the phone (the client's own screenshots) and on the end card
   socials: [
     { net: 'snap', handle: 'luxeloccresa75x' },
-    { net: 'whatsapp', handle: 'Luxeloccresa75x' },
+    { net: 'whatsapp', handle: '06 05 91 05 48' },
   ],
   phoneTitle: ['RÉSERVE EN', 'UN MESSAGE'],
   phoneSnap: ['AJOUTE-NOUS SUR SNAPCHAT', 'luxeloccresa75x'],
-  phoneWa: ['ÉCRIS-NOUS SUR WHATSAPP', 'Luxeloccresa75x'],
+  phoneWa: ['ÉCRIS-NOUS SUR WHATSAPP', '06 05 91 05 48'],
 };
 
 // convoy: the frame (original 24 fps index) where the car is hit, and its box in the 720×1280 source.
