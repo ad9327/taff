@@ -6,7 +6,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT } from '../js/timeline.mjs';
-import { CARS, shotSpans } from '../js/copy.mjs';
+import { CARS, COPY, shotSpans } from '../js/copy.mjs';
+const COPY_SOCIALS = COPY.socials;
 import { SR, Bus, mtof, rng, kick, eight, snare, clap, hat, pad, bell, whoosh, riser, impact, blip, crackle, noise, sweepFilter, biquad, reverb, writeWav } from './synth.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -136,7 +137,7 @@ const RIFF = [
 // ---------- buses ----------
 const drums = new Bus(LEN), bass = new Bus(LEN), music = new Bus(LEN), sfx = new Bus(LEN), send = new Bus(LEN);
 const START = b(HITS[0]);                 // the beat drops on the first hit
-const OUTRO = b(END_AT + 6);              // the beat stops, the end card rings out
+const OUTRO = b(END_AT + 9);              // the beat stops, the end card rings out
 const holoAt = (t) => HITS.some((hb) => t >= b(hb) && t < b(hb + HOLO_BEATS));   // hologram: half-time, no hats
 
 const K = kick({ f0: 190, f1: 46, dur: 0.38, click: 0.8, drive: 3 });
@@ -226,6 +227,10 @@ HITS.forEach((hb, i) => {
     sfx.add(tick(380 + i), run + b(a), 0.35, 0.4);
     sfx.add(whoosh({ dur: 0.18, f0: 1500, f1: 5000, peak: 0.5, seed: 390 + i * 7 + k }), run + b(a) - 0.1, 0.16, -0.4);
   });
+  // the rate card: a lift and a tick per price
+  const card = run + b(2);
+  sfx.add(whoosh({ dur: 0.3, f0: 500, f1: 4000, peak: 0.7, seed: 420 + i }), card - 0.05, 0.22, 0.2);
+  c.rates.forEach((_, n) => sfx.add(blip({ f0: 1200 + n * 260, f1: 1700 + n * 260, dur: 0.07 }), card + 0.22 + n * 0.09, 0.13, -0.3 + 0.3 * n));
   // the pull-back to the convoy (not after the arrivals)
   const back = b(RUN_END[i]);
   if (c.convoy) sfx.add(pullBack(400 + i), back, 0.5);
@@ -237,6 +242,8 @@ HITS.forEach((hb, i) => {
   sfx.add(whoosh({ dur: 0.6, f0: 300, f1: 7000, peak: 0.6, seed: 501 }), E - 0.4, 0.4);
   sfx.add(impact({ dur: 1.6, f0: 100, f1: 32, seed: 503 }), E, 0.9);
   [[85, 0], [80, BEAT / 2], [85, BEAT]].forEach(([m, d]) => { const v = cowbell(mtof(m)); sfx.add(v, E + 0.05 + d, 0.4); send.add(v, E + 0.05 + d, 0.3); });
+  sfx.add(whoosh({ dur: 0.4, f0: 500, f1: 4500, peak: 0.7, seed: 509 }), E + 0.95, 0.25);
+  COPY_SOCIALS.forEach((_, n) => sfx.add(blip({ f0: 1300 + n * 250, f1: 1900 + n * 250, dur: 0.07 }), E + 1.75 + n * 0.1, 0.12));
   const e = fadeIO(engine(1.8, (t) => 1500 + 6000 * Math.sin(Math.min(1, t / 1.4) * Math.PI) ** 1.5, { cyl: 8, seed: 505 }), 0.05, 0.2);
   sfx.add(e, OUTRO - b(1), 0.5);
   sfx.add(bangs(1.4, [[1.4, 0.9], [1.52, 0.6], [1.66, 0.5], [1.9, 0.3]], 507), OUTRO - b(1), 0.5);

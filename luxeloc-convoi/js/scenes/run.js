@@ -1,12 +1,15 @@
 // The run: the car's photos and clips cut on the beat, each with a slow push or pull, the name top-left
-// (make in gold, model in chrome, its number in the fleet), a progress tick per shot, and the price bottom-left.
-import { CARS, COPY, shotSpans } from '../copy.mjs';
+// (make in gold, model in chrome, its specs, its number in the fleet), a progress tick per shot, and two beats in
+// the rate card slides up: one column per rate (title, sub-title, the price in a blue pill), the deposit under it.
+import { CARS, euros, shotSpans } from '../copy.mjs';
 import { b } from '../timeline.mjs';
 import { segAt } from '../rig.js';
-import { clamp, ease, spring, set, h, wipe } from '../engine.js';
+import { clamp, ease, spring, set, h, wipe, fit } from '../engine.js';
 import { chrome } from './ui.js';
 
 const pad = (n) => String(n).padStart(4, '0');
+const CARD_AT = 2;          // beats into the run
+const CARD = { x: 40, y: 1150, w: 1000 };
 
 export function build(root, ctx) {
   const cars = CARS.map((c, i) => {
@@ -26,13 +29,24 @@ export function build(root, ctx) {
     const botShade = h('div', 'abs shade-bot', g);
     const make = h('div', 'abs run-make', g, `<span class="idx">${String(i + 1).padStart(2, '0')}/${String(CARS.length).padStart(2, '0')}</span>${c.make}`);
     const model = chrome(g, c.model, 92, 900);
+    const spec = c.specs ? h('div', 'abs run-spec', g, c.specs) : null;
     const ticks = shots.map(() => h('div', 'abs run-tick', g));
-    const pre = h('div', 'abs run-pre', g, COPY.pricePrefix);
-    const price = h('div', 'abs run-price goldtext', g, `${c.price}&#8239;€`);
-    const unit = h('div', 'abs run-unit', g, COPY.priceUnit);
-    const pw = price.scrollWidth;
+
+    const card = h('div', 'rate-card', g);
+    card.style.width = `${CARD.w}px`;
+    const row = h('div', 'rate-cols', card);
+    const colW = (CARD.w - 60 - 20 * (c.rates.length - 1)) / c.rates.length;
+    const cols = c.rates.map(([t, sub, p]) => {
+      const col = h('div', 'rate-col', row);
+      const tt = h('div', 'rate-t', col, t);
+      fit(tt, colW, 84);
+      h('div', 'rate-s', col, sub);
+      const pill = h('div', 'rate-p', col, euros(p));
+      return { col, pill };
+    });
+    const caution = h('div', 'rate-caution', card, `CAUTION : <b>${euros(c.caution)}</b>`);
     g.style.display = 'none';           // measured above while visible
-    return { g, shots, span, make, model, ticks, pre, price, pw, unit };
+    return { g, shots, span, make, model, spec, ticks, card, cols, caution };
   });
 
   return (t) => {
@@ -74,21 +88,32 @@ export function build(root, ctx) {
     const sm = spring(k - 0.1, 3.2, 0.55);
     set(C.model.el, { x: 58 + 40 * (1 - sm), y: 276, o: clamp((k - 0.1) / 0.06) });
     C.model.shine(clamp((k - 0.3) / 1.2));
-    const ty = 276 + C.model.h + 14;
+    let ty = 276 + C.model.h + 12;
+    if (C.spec) {
+      set(C.spec, { x: 64, y: ty, o: clamp((k - 0.25) / 0.06) });
+      wipe(C.spec, ease.outExpo(clamp((k - 0.25) / 0.4)), 'l');
+      ty += 46;
+    }
     C.ticks.forEach((e, n) => {
       const on = clamp((k - 0.2 - n * 0.04) / 0.1);
       e.style.background = n < j ? '#d9b25f' : n === j ? '#ffffff' : 'rgba(255,255,255,.28)';
       set(e, { x: 64 + n * 54, y: ty, o: on, sx: n === j ? 1 : 0.8 });
     });
 
-    // price
-    const kp = k - b(1);
-    set(C.pre, { x: 66, y: 1262, o: clamp(kp / 0.08) });
-    wipe(C.pre, ease.outExpo(clamp(kp / 0.3)), 'l');
-    const sp = spring(kp - 0.06, 3, 0.55);
-    set(C.price, { x: 60, y: 1296 + 30 * (1 - sp), s: 1.25 - 0.25 * sp, o: clamp((kp - 0.06) / 0.05) });
-    C.price.style.transformOrigin = '0 100%';
-    set(C.unit, { x: 60 + C.pw + 18, y: 1372, o: clamp((kp - 0.2) / 0.08) });
-    wipe(C.unit, ease.outExpo(clamp((kp - 0.2) / 0.25)), 'l');
+    // the rate card: slides up, the columns land one by one, the pills pop
+    const kc = k - b(CARD_AT);
+    const sc = spring(kc, 2.6, 0.62);
+    set(C.card, { x: CARD.x, y: CARD.y + 120 * (1 - sc), o: clamp(kc / 0.08) });
+    wipe(C.card, ease.outExpo(clamp(kc / 0.35)), 'u');
+    C.cols.forEach(({ col, pill }, n) => {
+      const kk = kc - 0.1 - n * 0.09;
+      const sp = spring(kk, 3.2, 0.55);
+      set(col, { y: 26 * (1 - sp), o: clamp(kk / 0.06) });
+      const kp = kk - 0.12;
+      set(pill, { s: 0.6 + 0.4 * spring(kp, 3.6, 0.5), o: clamp(kp / 0.05) });
+    });
+    const kk = kc - 0.2 - C.cols.length * 0.09;
+    set(C.caution, { o: clamp(kk / 0.1) });
+    wipe(C.caution, ease.outExpo(clamp(kk / 0.4)), 'l');
   };
 }

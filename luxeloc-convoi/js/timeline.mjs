@@ -38,7 +38,7 @@ export const HITS = [];
   });
 }
 export const END_AT = RUN_END[RUN_END.length - 1];
-export const DURATION = b(END_AT + 9);
+export const DURATION = b(END_AT + 12);
 
 // Segments, in order: { kind: 'play' | 'holo' | 'run' | 'arrive' | 'end', car, a, z (seconds), c0, c1 (convoy s) }
 export function segments(convoyHits) {
