@@ -1,0 +1,108 @@
+@font-face { font-family: 'Anton'; src: url('../assets/fonts/Anton-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Michroma'; src: url('../assets/fonts/Michroma-Regular.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Mont'; src: url('../assets/fonts/Montserrat.ttf') format('truetype'); font-weight: 100 900; font-display: block; }
+
+:root {
+  --black: #050506;
+  --ink: #0b0b0e;
+  --chrome-hi: #ffffff;
+  --chrome-lo: #8d939c;
+  --gold: #d9b25f;
+  --gold-hi: #f6dc94;
+  --gold-lo: #9c7a32;
+  --white: #ffffff;
+  --beam: #fff4d6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--black); }
+body { font-family: 'Mont', sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; inset: 0; overflow: hidden; background: var(--black); }
+#bg { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#cam { position: absolute; inset: 0; transform-origin: 540px 960px; }
+#scenes { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; display: none; }
+.abs { position: absolute; left: 0; top: 0; }
+
+#grain { position: absolute; inset: -64px; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay; background-size: 256px 256px; }
+#vignette { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 90% 75% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.7) 100%); }
+#flash { position: absolute; inset: 0; pointer-events: none; background: #fff; opacity: 0; }
+
+/* a shot fills the frame; the grade keeps daylight and night photos in one family */
+.shot { position: absolute; overflow: hidden; }
+.shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.12) saturate(.88) brightness(.9); }
+
+.make { font-family: 'Mont', sans-serif; font-weight: 800; letter-spacing: 16px; color: var(--gold); white-space: nowrap; text-transform: uppercase; }
+.model { font-family: 'Michroma', sans-serif; white-space: nowrap; line-height: 1.05;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f3f6 45%, #a4abb5 55%, #ffffff 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.kinetic { font-family: 'Anton', sans-serif; text-transform: uppercase; white-space: nowrap; line-height: .95; }
+.goldtext { padding-top: .14em; background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, var(--gold-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.label { position: absolute; display: inline-block; font-family: 'Anton', sans-serif; text-transform: uppercase; white-space: nowrap; padding: 6px 26px 4px; line-height: 1.12; }
+.label.gold { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #111; box-shadow: 0 0 40px rgba(217,178,95,.35); }
+.label.white { background: #fff; color: #111; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.label .in { display: inline-block; }
+
+.pill { position: absolute; display: flex; align-items: center; gap: 14px; padding: 14px 30px; border-radius: 999px; white-space: nowrap;
+  background: rgba(10,10,12,.72); border: 2px solid rgba(217,178,95,.7); font-weight: 600; font-size: 36px; }
+.pill.goldfill { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #111; border-color: transparent; font-weight: 800; }
+
+.beam { position: absolute; left: -40px; width: 1160px; height: 6px; background: var(--beam);
+  box-shadow: 0 0 18px 6px rgba(255,240,200,.9), 0 0 80px 30px rgba(255,220,150,.45); border-radius: 3px; }
+
+/* ---------- v2: the convoy ---------- */
+.layer { position: absolute; inset: 0; }
+.pic { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+.pic img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; filter: contrast(1.06) saturate(.96); }
+
+/* hologram */
+.holo-grid { background:
+    repeating-linear-gradient(0deg, rgba(120,240,255,.55) 0 2px, transparent 2px 26px),
+    repeating-linear-gradient(90deg, rgba(120,240,255,.4) 0 2px, transparent 2px 26px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 55%, #000 35%, transparent 75%);
+  mix-blend-mode: screen; }
+.holo-scan { height: 6px; border-radius: 3px; background: #e9feff;
+  box-shadow: 0 0 14px 4px rgba(120,240,255,.95), 0 0 60px 18px rgba(60,220,255,.5); }
+.holo-beam { background: linear-gradient(0deg, rgba(120,240,255,.5), rgba(120,240,255,.16) 55%, rgba(120,240,255,.04));
+  mix-blend-mode: screen; }
+.holo-emitter { width: 180px; height: 32px; border-radius: 50%; background: radial-gradient(ellipse at center, #effeff 0%, rgba(120,240,255,.9) 30%, rgba(60,220,255,0) 70%);
+  mix-blend-mode: screen; }
+.bracket { position: absolute; left: 0; top: 0; border: 0 solid #8ff4ff; filter: drop-shadow(0 0 8px rgba(80,230,255,.95)); }
+.bracket.tl { border-top-width: 6px; border-left-width: 6px; }
+.bracket.tr { border-top-width: 6px; border-right-width: 6px; }
+.bracket.bl { border-bottom-width: 6px; border-left-width: 6px; }
+.bracket.br { border-bottom-width: 6px; border-right-width: 6px; }
+.holo-tag { font-family: 'Michroma', sans-serif; font-size: 24px; letter-spacing: 4px; color: #a9f8ff; white-space: nowrap;
+  text-shadow: 0 0 10px rgba(80,230,255,.9); }
+.holo-make { font-family: 'Mont', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: 14px; color: #a9f8ff; white-space: nowrap;
+  text-shadow: 0 0 8px rgba(120,240,255,.95), 0 0 30px rgba(60,220,255,.6); }
+.holo-text { font-family: 'Michroma', sans-serif; white-space: nowrap; line-height: 1.1; padding-top: .1em; color: #c4fcff;
+  text-shadow: 0 0 6px rgba(140,245,255,1), 0 0 26px rgba(60,220,255,.75), 0 0 70px rgba(40,200,255,.45);
+  -webkit-mask-image: repeating-linear-gradient(0deg, #000 0 3px, rgba(0,0,0,.42) 3px 6px); }
+.holo-text.ghost-r { color: rgba(255,60,120,.9); text-shadow: none; mix-blend-mode: screen; }
+.holo-text.ghost-b { color: rgba(60,120,255,.9); text-shadow: none; mix-blend-mode: screen; }
+.holo-id { font-family: 'Mont', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 8px; color: rgba(169,248,255,.9); white-space: nowrap;
+  text-shadow: 0 0 10px rgba(80,230,255,.8); }
+
+/* the run */
+.shade-top { width: 1080px; height: 620px; background: linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.35) 55%, rgba(0,0,0,0) 100%); }
+.shade-bot { top: 1100px; width: 1080px; height: 820px; background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.5) 55%, rgba(0,0,0,0) 100%); }
+.run-make { font-family: 'Mont', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: 10px; color: var(--gold); white-space: nowrap; }
+.run-make .idx { font-family: 'Michroma', sans-serif; font-weight: 400; letter-spacing: 2px; color: #a9f8ff; margin-right: 22px;
+  text-shadow: 0 0 10px rgba(80,230,255,.8); }
+.run-tick { width: 44px; height: 6px; border-radius: 3px; transform-origin: 0 50%; }
+.run-pre { font-family: 'Mont', sans-serif; font-weight: 700; font-size: 30px; letter-spacing: 8px; color: rgba(255,255,255,.88); white-space: nowrap; text-transform: uppercase; }
+.run-price { font-family: 'Anton', sans-serif; font-size: 150px; line-height: 1; white-space: nowrap; filter: drop-shadow(0 6px 24px rgba(0,0,0,.6)); }
+.run-unit { font-family: 'Anton', sans-serif; font-size: 64px; line-height: 1; color: #fff; white-space: nowrap; }
+
+/* intro / end */
+.intro-line { font-family: 'Mont', sans-serif; font-weight: 600; font-size: 30px; letter-spacing: 6px; color: rgba(255,255,255,.92); white-space: nowrap; text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+.intro-zone { font-family: 'Mont', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 10px; color: var(--gold); white-space: nowrap; text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+.end-fleet { font-family: 'Mont', sans-serif; font-weight: 700; font-size: 25px; letter-spacing: 5px; color: rgba(255,255,255,.9); white-space: nowrap; text-transform: uppercase; }
+.end-from { font-family: 'Anton', sans-serif; font-size: 58px; color: #fff; white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
+.end-from b { font-weight: 400; }

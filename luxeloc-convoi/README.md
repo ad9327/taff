@@ -1,0 +1,48 @@
+# LuxeLocResa93 — le convoi (TikTok 9:16, 39,4 s)
+
+Le convoi roule. À chaque voiture qui arrive : la visée se verrouille, la caméra zoome d'un coup sur elle, son nom
+s'allume en hologramme au-dessus du toit, puis défilent ses photos et vidéos avec son prix. Ensuite on revient au
+convoi jusqu'à la suivante. La RS4 et la RS7 ne sont pas dans le convoi : elles arrivent après, sur leur photo, avec
+le même zoom et le même hologramme. Carte de fin : RÉSERVE TA VOITURE — EN DM et les réseaux.
+
+Même moteur que `luxeloc-video/` : chaque image est une fonction du temps rendue dans Chrome headless, la musique
+est composée et synthétisée sur la même grille de tempo.
+
+```bash
+node tools/render.mjs                         # out/luxelocresa93-convoi.mp4 (1080×1920, 60 fps, -14 LUFS) + -web.mp4 + covers
+node tools/capture.mjs still 1.5 2.8          # images pleine taille → out/stills/
+node tools/capture.mjs sheet 0.5 5.3 36       # planche → out/sheet.png
+node tools/capture.mjs verify                 # chaque image doit être une fonction de t
+node audio/score.mjs --report --holo && node tools/master.mjs   # musique seule
+```
+
+## Modifier
+
+- **Prix, noms, photos de chaque voiture** : `js/copy.mjs` (`CARS`). Les prix viennent des fiches Snapchat du
+  client (24 h en semaine).
+- **Réseaux, textes** : `js/copy.mjs` (`COPY`).
+- **Timing** : `js/timeline.mjs` (140 BPM ; `HITS` = le temps où chaque voiture est zoomée, 2 temps d'hologramme,
+  6 temps de défilé).
+- **Son** : `audio/score.mjs` (un moteur par voiture dans `ENGINES`).
+
+## Médias (hors git : `assets/media/`)
+
+| Dossier | Contenu |
+|---|---|
+| `convoy/` | la vidéo Higgsfield du convoi passée en 1080×1920 et 60 i/s (interpolation) |
+| `freeze/` | l'image du convoi au moment du zoom pour chaque voiture, agrandie ×3, plaque couverte |
+| `cars/` | les photos du défilé (story Snapchat du client recadrée, ses photos, plaques couvertes par une plaque LUXELOCRESA93) |
+| `clips/` | deux extraits vidéo en images 60 i/s : `m5_walk` (M5 Touring), `golf_dash` (Golf 8 R) |
+
+Ordre dans le convoi : SL 805, M5 Touring, Golf 8 R, 911 GT3, RS5, RS6 Avant ; puis RS4 Avant et RS7 Sportback.
+
+## Direction
+
+**Le film en une ligne :** la visée d'un HUD verrouille chaque voiture du convoi et la projette en hologramme.
+
+**Look :** le convoi réel, la marque en chrome et or (LUXELOC / RESA93), l'hologramme en cyan (lignes de balayage,
+fantôme chromatique, tranches de glitch à l'apparition), les prix en or Anton. Noms des modèles en Michroma.
+
+**Son :** phonk drift, 140 BPM, do# mineur. Le rythme tombe sur le premier zoom ; pendant chaque hologramme la batterie
+passe en demi-temps, la 808 s'efface et on entend le moteur de la voiture (V8, flat-six, quatre-cylindres avec
+pétarades Akrapovič). Tic sur chaque coupe du défilé, balayage descendant au retour vers le convoi.
