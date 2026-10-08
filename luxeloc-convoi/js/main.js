@@ -34,7 +34,7 @@ let pending = [];
 
 async function init() {
   grain.style.backgroundImage = `url(${grainTile()})`;
-  await Promise.all(['100px Anton', '100px Michroma', '400 40px Mont', '600 40px Mont', '700 40px Mont', '800 40px Mont'].map((f) => document.fonts.load(f, 'AÉÊ€0')));
+  await Promise.all(['100px Anton', '100px Michroma', '400 40px Mont', '600 40px Mont', '700 40px Mont', '800 40px Mont', '400 33px Inter', '600 33px Inter'].map((f) => document.fonts.load(f, 'AÉÊ€0')));
   const ctx = { wait: (p) => { if (p) pending.push(p); } };
   SC = LAYERS.map(([name, mod]) => {
     const root = h('div', 'layer', host);

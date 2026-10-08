@@ -5,10 +5,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT, PHONE_AT, PHONE_SWIPE } from '../js/timeline.mjs';
+import { BEAT, BAR, b, DURATION, HITS, HOLO_BEATS, RUN_END, END_AT, PHONE_AT, PHONE_SWIPE, PHONE_CHAT, CHAT, CHAT_CPS } from '../js/timeline.mjs';
 import { CARS, COPY, shotSpans } from '../js/copy.mjs';
 const COPY_SOCIALS = COPY.socials;
-import { SR, Bus, mtof, rng, kick, eight, snare, clap, hat, pad, bell, whoosh, riser, impact, blip, crackle, noise, sweepFilter, biquad, reverb, writeWav } from './synth.mjs';
+import { SR, Bus, mtof, rng, kick, eight, snare, clap, hat, pad, bell, whoosh, riser, impact, blip, crackle, noise, filterBuf, sweepFilter, biquad, reverb, writeWav } from './synth.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LEN = DURATION;
@@ -138,7 +138,10 @@ const RIFF = [
 const drums = new Bus(LEN), bass = new Bus(LEN), music = new Bus(LEN), sfx = new Bus(LEN), send = new Bus(LEN);
 const START = b(HITS[0]);                 // the beat drops on the first hit
 const OUTRO = b(END_AT + 9);              // the beat stops, the end card rings out
-const holoAt = (t) => HITS.some((hb) => t >= b(hb) && t < b(hb + HOLO_BEATS));   // hologram: half-time, no hats
+const holoAt0 = (t) => HITS.some((hb) => t >= b(hb) && t < b(hb + HOLO_BEATS));   // hologram: half-time, no hats
+// the chat on the phone is a breakdown too (the same thinning), so the keys and the pops are heard
+const chatAt = (t) => t >= b(PHONE_AT + PHONE_CHAT) && t < b(END_AT);
+const holoAt = (t) => holoAt0(t) || chatAt(t);
 
 const K = kick({ f0: 190, f1: 46, dur: 0.38, click: 0.8, drive: 3 });
 const CL = clap({ seed: 21 });
@@ -181,7 +184,7 @@ for (let bar = 0; bar < NBARS; bar++) {
     const t = t0 + s * S16;
     if (!live(t)) return;
     const v = cowbell(mtof(m - 12));
-    const g = holoAt(t) ? 0.45 : 0.8;            // the riff steps back while the name is up
+    const g = chatAt(t) ? 0.3 : holoAt(t) ? 0.45 : 0.8;   // the riff steps back while the name is up / the chat runs
     music.add(v, t, g, s % 2 ? 0.25 : -0.25);
     send.add(v, t, 0.25);
   });
@@ -247,6 +250,24 @@ HITS.forEach((hb, i) => {
   const sw = P + b(PHONE_SWIPE);
   sfx.add(whoosh({ dur: 0.3, f0: 3000, f1: 800, peak: 0.4, seed: 607 }), sw - 0.05, 0.32, 0.3);
   [[88, 0], [95, 0.09]].forEach(([m, d]) => { const v = bell({ f: mtof(m), dur: 0.5, ratio: 1, index: 0.6, decay: 9, bright: 1 }); sfx.add(v, sw + 0.3 + d, 0.16); });
+}
+
+// ---------- the chat: a soft key click per character, a swoosh as a message goes, a two-note pop as one comes in ----------
+{
+  const C = b(PHONE_AT + PHONE_CHAT);
+  const key = (seed) => { const n = noise(0.025, seed); filterBuf(n, 'bp', 3800, 1.2); for (let i = 0; i < n.length; i++) n[i] *= Math.exp(-i / (0.004 * SR)); return n; };
+  const KEYS = [key(701), key(702), key(703)];
+  CHAT.msgs.forEach((m, j) => {
+    const t0 = C + b(m.type), land = C + b(m.land);
+    if (m.who === 'me') {
+      const n = Array.from(m.text).length;
+      for (let i = 1; i <= n; i++) sfx.add(KEYS[i % 3], t0 + i / CHAT_CPS - 0.01, 0.16, ((i * 37) % 7) / 7 - 0.5);
+      sfx.add(whoosh({ dur: 0.22, f0: 900, f1: 4500, peak: 0.25, seed: 710 + j }), land - 0.08, 0.2, 0.3);
+      sfx.add(blip({ f0: 1500, f1: 2100, dur: 0.06 }), land, 0.1, 0.3);
+    } else {
+      [[84, 0], [91, 0.08]].forEach(([mm, d]) => { const v = bell({ f: mtof(mm), dur: 0.45, ratio: 1, index: 0.5, decay: 10, bright: 1 }); sfx.add(v, land + d, 0.15, -0.3); });
+    }
+  });
 }
 
 // ---------- end card ----------

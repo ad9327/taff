@@ -1,11 +1,13 @@
 // The phone: it rises off the table under RÉSERVE EN UN MESSAGE, its screen lights up on the client's Snapchat profile
 // (baked into the frames by tools/bake-phone.py), a yellow Snapchat pill gives the username; the screen swipes to the
-// WhatsApp chat and a green pill gives the account. A slow push while it holds.
+// WhatsApp chat, where a booking conversation is typed live (chat.js), then a green pill gives the number. A slow
+// push while it holds.
 import { COPY } from '../copy.mjs';
-import { b, BEAT, PHONE_RISE, PHONE_SWIPE } from '../timeline.mjs';
+import { b, PHONE_RISE, PHONE_SWIPE, PHONE_CHAT, CHAT } from '../timeline.mjs';
 import { segAt } from '../rig.js';
 import { clamp, ease, spring, set, h, wipe } from '../engine.js';
 import { icon } from '../icons.js';
+import { buildChat } from './chat.js';
 
 const LAST = 213;            // last frame of assets/media/phone (60 fps)
 const ON = 178;              // from here the frames have the lit screen (assets/media/phone_on)
@@ -18,6 +20,7 @@ export function build(root, ctx) {
   const img = h('img', '', box);
   img.decoding = 'sync';
   let last = '';
+  const chat = buildChat(box);
 
   const t1 = h('div', 'label gold', root, `<span class="in">${COPY.phoneTitle[0]}</span>`);
   const t2 = h('div', 'label white', root, `<span class="in">${COPY.phoneTitle[1]}</span>`);
@@ -60,8 +63,9 @@ export function build(root, ctx) {
       src = i < SWIPE_N ? `assets/media/phone_hold/swipe_${String(i).padStart(2, '0')}.jpg` : 'assets/media/phone_hold/wa.jpg';
     }
     if (src !== last) { img.src = src; last = src; ctx.wait(img.decode().catch(() => {})); }
-    const push = 1 + 0.05 * ease.inOutCubic(clamp((k - RISE) / (g.z - g.a - RISE)));
+    const push = 1 + 0.04 * ease.inOutCubic(clamp((k - RISE) / (g.z - g.a - RISE)));
     set(box, { s: push });
+    chat(k - b(PHONE_CHAT), k >= b(PHONE_CHAT));
 
     // RÉSERVE EN / UN MESSAGE while it rises, gone as the screen lights up
     const out = 1 - clamp((k - (b(5) - 0.15)) / 0.15);
@@ -74,7 +78,7 @@ export function build(root, ctx) {
     // the callouts
     const ks = k - (RISE + 0.05);
     show(snap, ks, ks > 0 ? 1 - clamp((k - (SW - 0.1)) / 0.12) : 0);
-    const kw = k - (SW + 0.3);
+    const kw = k - b(PHONE_CHAT + CHAT.end - 0.5);       // once the conversation is over
     show(wa, kw, kw > 0 ? 1 : 0);
   };
 }

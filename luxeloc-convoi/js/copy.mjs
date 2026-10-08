@@ -20,6 +20,13 @@ export const COPY = {
   phoneTitle: ['RÉSERVE EN', 'UN MESSAGE'],
   phoneSnap: ['AJOUTE-NOUS SUR SNAPCHAT', 'luxeloccresa75x'],
   phoneWa: ['ÉCRIS-NOUS SUR WHATSAPP', '06 05 91 05 48'],
+  // the chat typed on the phone: [me | them, text, time] (narrow no-break spaces before ? and !)
+  chat: [
+    ['me', 'Bonjour, je voudrais réserver la RS6 🚀', '16:24'],
+    ['them', 'Bonjour 👋 Avec plaisir\u202f! Pour quelle date souhaitez-vous réserver\u202f?', '16:24'],
+    ['me', 'Elle est disponible ce week-end\u202f? Et quels sont vos tarifs\u202f?', '16:25'],
+    ['them', 'Nous allons vérifier les disponibilités ✅ Nos tarifs dépendent de la durée de location. Envoyez-nous vos dates pour recevoir un devis.', '16:25'],
+  ],
 };
 
 // convoy: the frame (original 24 fps index) where the car is hit, and its box in the 720×1280 source.

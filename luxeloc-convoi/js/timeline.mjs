@@ -3,7 +3,7 @@
 // The film: the convoy rolls; as each car arrives the camera punches in on it, its name lights up as a hologram
 // over the roof, then a run of its photos and clips, then back to the convoy for the next one. The RS4 and the
 // RS7 are not in the convoy: they arrive after it on their own photo, with the same punch-in and hologram.
-import { CARS, runBeats } from './copy.mjs';
+import { CARS, COPY, runBeats } from './copy.mjs';
 
 export const BPM = 140;
 export const BEAT = 60 / BPM;          // 0.4286 s
@@ -42,7 +42,27 @@ export const HITS = [];
 export const PHONE_AT = RUN_END[RUN_END.length - 1];
 export const PHONE_RISE = 6;
 export const PHONE_SWIPE = 9;          // beats into the phone: Snapchat → WhatsApp
-export const PHONE_BEATS = 12;
+export const PHONE_CHAT = 9.75;        // beats into the phone: the chat starts
+
+// the chat, in beats from its start: each message is typed (me) or announced by dots (them), then lands
+export const CHAT_CPS = 1 / 0.045;     // typing speed, characters (code points) per second
+export const CHAT = (() => {
+  const msgs = [];
+  let at = 0.5;
+  for (const [who, text, time] of COPY.chat) {
+    if (who === 'me') {
+      const dur = Array.from(text).length / CHAT_CPS;
+      const land = Math.ceil((at + dur / BEAT) * 2) / 2 + 0.5;      // a short pause, then send on a half beat
+      msgs.push({ who, text, time, type: at, land });
+      at = land + 0.75;
+    } else {
+      msgs.push({ who, text, time, type: at, land: at + 2 });
+      at += 3;
+    }
+  }
+  return { msgs, end: at };
+})();
+export const PHONE_BEATS = Math.ceil(PHONE_CHAT + CHAT.end + 3.5);
 export const END_AT = PHONE_AT + PHONE_BEATS;
 export const DURATION = b(END_AT + 10);
 

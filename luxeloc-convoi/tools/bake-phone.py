@@ -108,3 +108,20 @@ for i in range(15):
     both[:, CW - sx:] = wa[:, :sx]
     cv2.imwrite(os.path.join(M, 'phone_hold', f'swipe_{i:02d}.jpg'), composite(last, both, ql, rl), [cv2.IMWRITE_JPEG_QUALITY, 93])
 print('frames', N, 'lit from', ON, 'hold quad', np.round(ql, 1).tolist())
+
+# pieces of the held WhatsApp frame for the live chat drawn over it (js/scenes/chat.js), in output pixels
+WAF = cv2.imread(os.path.join(M, 'phone_hold', 'wa.jpg'))
+os.makedirs(os.path.join(M, 'wa'), exist_ok=True)
+for name, (x0, y0, x1, y1) in {
+    'wall': (168, 730, 912, 1170),     # the doodle wallpaper, nothing on it
+    'notice': (222, 496, 860, 726),    # the encryption notice bubble
+    'chip': (420, 420, 652, 476),      # "Aujourd'hui"
+    'bar': (168, 1176, 912, 1272),     # the input bar
+}.items():
+    cv2.imwrite(os.path.join(M, 'wa', f'{name}.jpg'), WAF[y0:y1, x0:x1], [cv2.IMWRITE_JPEG_QUALITY, 95])
+# the whole chat area with the chip and the notice painted out with wallpaper from lower down: the fixed
+# wallpaper behind the scrolling list, identical to the frame wherever nothing scrolls over it
+wall = WAF[398:1176, 168:912].copy()
+for (x0, y0, x1, y1), sy in [((420, 420, 652, 476), 1000), ((222, 496, 860, 726), 760)]:
+    wall[y0 - 398:y1 - 398, x0 - 168:x1 - 168] = WAF[sy:sy + (y1 - y0), x0:x1]
+cv2.imwrite(os.path.join(M, 'wa', 'wallfull.jpg'), wall, [cv2.IMWRITE_JPEG_QUALITY, 95])
